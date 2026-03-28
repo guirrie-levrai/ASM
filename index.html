@@ -1082,61 +1082,60 @@ body {
   </div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6C4u4CW25tQ1IJZTSgIZi6OFeu-KzCWg",
+  authDomain: "asmm-cefcf.firebaseapp.com",
+  projectId: "asmm-cefcf",
+  storageBucket: "asmm-cefcf.firebasestorage.app",
+  messagingSenderId: "784738924514",
+  appId: "1:784738924514:web:17e52bf8d4d7ed7d1a2bbb"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
 // ═══ COMPTES ÉQUIPE ═══
 const ACCOUNTS = {
-  guirrie: { pass:'Ven1793!G', role:'directeur', label:'Directeur de Projet', name:'Guirrie' },
-  lomol:   { pass:'Ven1793!L', role:'directeur', label:'Directeur de Projet', name:'Lomol'   },
+  guirrie: { pass:'A3cdmm33', role:'directeur', label:'Directeur de Projet', name:'Guirrie' },
+  lomol:   { pass:'Lachasse', role:'directeur', label:'Directeur de Projet', name:'Lomol'   },
   xentrax: { pass:'Xenleplusbo', role:'directeur', label:'Directeur de Projet', name:'Xentrax' },
   '1baba': { pass:'Ven1793!B', role:'directeur', label:'Directeur de Projet', name:'1baba'   },
-  'théo':  { pass:'Ven1793!T', role:'directeur', label:'Directeur de Projet', name:'Théo'    },
   theo:    { pass:'Ven1793!T', role:'directeur', label:'Directeur de Projet', name:'Théo'    },
-  'anaë':  { pass:'Ven1793!A', role:'resp-dev',  label:'Responsable Développement', name:'Anaë' },
-  anae:    { pass:'Ven1793!A', role:'resp-dev',  label:'Responsable Développement', name:'Anaë' },
+  anae:    { pass:'Pierre', role:'resp-dev',  label:'Responsable Développement', name:'Anaë' },
   elioth:  { pass:'Ven1793!E', role:'staff',     label:'Staff',               name:'Elioth'  },
 };
 
-// ═══ TÂCHES ═══
-let tasks = [
-  { id:1, name:'Coder le NarrativeEngine (ModuleScript)', assignee:'Resp. Dev',   prio:'haute',   done:false },
-  { id:2, name:'Modéliser le village de l\'Acte I',       assignee:'Développeur', prio:'haute',   done:false },
-  { id:3, name:'Écrire les dialogues de la scène 3',      assignee:'Staff',       prio:'moyenne', done:true  },
-  { id:4, name:'Créer la DialogBox UI (LocalScript)',     assignee:'Resp. Dev',   prio:'moyenne', done:false },
-  { id:5, name:'Rédiger fiche historique Turreau',        assignee:'Staff',       prio:'basse',   done:true  },
-  { id:6, name:'Prototype système de relations',          assignee:'Développeur', prio:'haute',   done:false },
+// ═══ ÉTAT LOCAL ═══
+let tasks = [];
+let actes = [
+  { id:'acte1',  num:'Acte I',    name:'La Terre et le Ciel',      pct:0, status:'todo' },
+  { id:'acte2',  num:'Acte II',   name:'Les Premiers Grondements',  pct:0, status:'todo' },
+  { id:'acte3',  num:'Acte III',  name:'Le Raid',                   pct:0, status:'todo' },
+  { id:'acte4',  num:'Acte IV',   name:'Le Soulèvement',            pct:0, status:'todo' },
+  { id:'acte5',  num:'Acte V',    name:'Frères d\'Armes',           pct:0, status:'todo' },
+  { id:'acte6',  num:'Acte VI',   name:'Les Victoires',             pct:0, status:'todo' },
+  { id:'acte7',  num:'Acte VII',  name:'La Déroute',                pct:0, status:'todo' },
+  { id:'acte8',  num:'Acte VIII', name:'L\'Hiver des Loups',        pct:0, status:'todo' },
+  { id:'acte9',  num:'Acte IX',   name:'Les Colonnes Infernales',   pct:0, status:'todo' },
+  { id:'acte10', num:'Acte X',    name:'La Fin d\'un Monde',        pct:0, status:'todo' },
 ];
-
-// ═══ ACTES ═══
-const actes = [
-  { num:'Acte I',   name:'La Terre et le Ciel',      pct:80,  status:'wip'  },
-  { num:'Acte II',  name:'Les Premiers Grondements',  pct:60,  status:'wip'  },
-  { num:'Acte III', name:'Le Raid',                   pct:100, status:'done' },
-  { num:'Acte IV',  name:'Le Soulèvement',             pct:40,  status:'wip'  },
-  { num:'Acte V',   name:'Frères d\'Armes',            pct:20,  status:'wip'  },
-  { num:'Acte VI',  name:'Les Victoires',              pct:0,   status:'todo' },
-  { num:'Acte VII', name:'La Déroute',                 pct:0,   status:'todo' },
-  { num:'Acte VIII',name:'L\'Hiver des Loups',         pct:0,   status:'todo' },
-  { num:'Acte IX',  name:'Les Colonnes Infernales',    pct:0,   status:'todo' },
-  { num:'Acte X',   name:'La Fin d\'un Monde',         pct:0,   status:'todo' },
-];
-
 let taskFilter = 'all';
 let currentUser = null;
+const barFill = { done:'#7EC89A', wip:'var(--gold)', todo:'rgba(255,255,255,0.15)' };
 
 // ═══ LOGIN ═══
-function doLogin() {
+window.doLogin = function() {
   const role = document.getElementById('login-role').value;
   const user = document.getElementById('login-user').value.trim();
   const pass = document.getElementById('login-pass').value;
   const err  = document.getElementById('login-error');
-
-  if (!role || !user || !pass) { err.style.display = 'block'; err.textContent = 'Veuillez remplir tous les champs.'; return; }
-
+  if (!role || !user || !pass) { err.style.display='block'; err.textContent='Veuillez remplir tous les champs.'; return; }
   const acc = ACCOUNTS[user.toLowerCase()];
-  if (!acc || acc.pass !== pass || acc.role !== role) {
-    err.style.display = 'block'; err.textContent = 'Identifiant ou mot de passe incorrect.'; return;
-  }
-
+  if (!acc || acc.pass !== pass || acc.role !== role) { err.style.display='block'; err.textContent='Identifiant ou mot de passe incorrect.'; return; }
   err.style.display = 'none';
   currentUser = { ...acc, id: user };
   enterDashboard();
@@ -1150,13 +1149,11 @@ function enterDashboard() {
   document.getElementById('user-avatar').textContent = currentUser.name[0].toUpperCase();
   document.getElementById('welcome-msg').textContent = `Bienvenue, ${currentUser.name}.`;
   document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-  renderTasks();
-  renderActes();
-  renderMiniProgress();
-  updateDoneCount();
+  listenTasks();
+  loadActes();
 }
 
-function doLogout() {
+window.doLogout = function() {
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('login-page').style.display = 'flex';
   document.getElementById('login-user').value = '';
@@ -1166,7 +1163,7 @@ function doLogout() {
 }
 
 // ═══ PANELS ═══
-function showPanel(id, el) {
+window.showPanel = function(id, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('panel-' + id).classList.add('active');
@@ -1175,7 +1172,16 @@ function showPanel(id, el) {
   document.getElementById('topbar-title').textContent = titles[id] || '';
 }
 
-// ═══ TASKS ═══
+// ═══ TÂCHES (Firestore temps réel) ═══
+function listenTasks() {
+  onSnapshot(collection(db, 'tasks'), snap => {
+    tasks = snap.docs.map(d => ({ firestoreId: d.id, ...d.data() }));
+    renderTasks();
+    updateDoneCount();
+    renderMiniProgress();
+  });
+}
+
 function renderTasks() {
   const list = document.getElementById('tasks-list');
   list.innerHTML = '';
@@ -1185,25 +1191,34 @@ function renderTasks() {
     if (taskFilter === 'haute') return t.prio === 'haute' && !t.done;
     return true;
   });
-
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="color:var(--cream3);font-style:italic;font-size:14px;padding:16px 0">Aucune tâche.</div>';
+    return;
+  }
   filtered.forEach(t => {
     const div = document.createElement('div');
     div.className = 'task-item' + (t.done ? ' completed' : '');
     div.innerHTML = `
-      <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})"></div>
+      <div class="task-check ${t.done ? 'done' : ''}" onclick="window.toggleTask('${t.firestoreId}', ${t.done})"></div>
       <div class="task-name">${t.name}</div>
       <div class="task-assignee">${t.assignee}</div>
-      <div class="task-prio prio-${t.prio}">${t.prio}</div>`;
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="task-prio prio-${t.prio}">${t.prio}</div>
+        <div onclick="window.deleteTask('${t.firestoreId}')" style="cursor:pointer;color:var(--cream3);font-size:16px;line-height:1;padding:2px 6px;border:1px solid var(--border);transition:color .15s" onmouseover="this.style.color='#E89090'" onmouseout="this.style.color='var(--cream3)'">✕</div>
+      </div>`;
     list.appendChild(div);
   });
 }
 
-function toggleTask(id) {
-  const t = tasks.find(t => t.id === id);
-  if (t) { t.done = !t.done; renderTasks(); updateDoneCount(); renderMiniProgress(); }
+window.toggleTask = async function(firestoreId, done) {
+  await updateDoc(doc(db, 'tasks', firestoreId), { done: !done });
 }
 
-function filterTasks(f, btn) {
+window.deleteTask = async function(firestoreId) {
+  if (confirm('Supprimer cette tâche ?')) await deleteDoc(doc(db, 'tasks', firestoreId));
+}
+
+window.filterTasks = function(f, btn) {
   taskFilter = f;
   document.querySelectorAll('.task-filter').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -1214,30 +1229,38 @@ function updateDoneCount() {
   document.getElementById('tasks-done-count').textContent = tasks.filter(t => t.done).length;
 }
 
-// ═══ TASK MODAL ═══
-function openTaskModal() { document.getElementById('task-modal').classList.add('open'); }
-function closeTaskModal() { document.getElementById('task-modal').classList.remove('open'); }
-function closeTaskModalOutside(e) { if (e.target === document.getElementById('task-modal')) closeTaskModal(); }
+window.openTaskModal  = () => document.getElementById('task-modal').classList.add('open');
+window.closeTaskModal = () => document.getElementById('task-modal').classList.remove('open');
+window.closeTaskModalOutside = e => { if (e.target === document.getElementById('task-modal')) window.closeTaskModal(); }
 
-function addTask() {
+window.addTask = async function() {
   const name = document.getElementById('new-task-name').value.trim();
   if (!name) return;
-  tasks.push({
-    id: Date.now(),
+  await addDoc(collection(db, 'tasks'), {
     name,
     assignee: document.getElementById('new-task-assignee').value,
-    prio: document.getElementById('new-task-prio').value,
-    done: false
+    prio:     document.getElementById('new-task-prio').value,
+    done:     false,
+    createdAt: Date.now()
   });
   document.getElementById('new-task-name').value = '';
-  closeTaskModal();
-  renderTasks();
-  updateDoneCount();
+  window.closeTaskModal();
 }
 
-// ═══ ACTES ═══
-const barColors = { done:'#2A6A3A', wip:'var(--gold-d)', todo:'rgba(255,255,255,0.1)' };
-const barFill   = { done:'#7EC89A', wip:'var(--gold)', todo:'rgba(255,255,255,0.15)' };
+// ═══ ACTES (Firestore) ═══
+async function loadActes() {
+  const snap = await getDocs(collection(db, 'actes'));
+  if (!snap.empty) {
+    snap.docs.forEach(d => {
+      const i = actes.findIndex(a => a.id === d.id);
+      if (i !== -1) actes[i] = { ...actes[i], ...d.data() };
+    });
+  } else {
+    for (const a of actes) await setDoc(doc(db, 'actes', a.id), { pct: a.pct, status: a.status });
+  }
+  renderActes();
+  renderMiniProgress();
+}
 
 function renderActes() {
   const list = document.getElementById('actes-list');
@@ -1245,7 +1268,6 @@ function renderActes() {
   actes.forEach((a, i) => {
     const div = document.createElement('div');
     div.className = 'acte-item';
-    const statusLabel = { done:'Terminé', wip:'En cours', todo:'À venir' }[a.status];
     div.innerHTML = `
       <div class="acte-header">
         <div class="acte-left">
@@ -1253,7 +1275,7 @@ function renderActes() {
           <span class="acte-name">${a.name}</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
-          <select onchange="updateActeStatus(${i}, this.value)" style="background:var(--ink4);border:1px solid var(--border);color:var(--cream);font-family:'Crimson Pro',serif;font-size:12px;padding:3px 8px;cursor:pointer;outline:none;">
+          <select onchange="window.updateActeStatus(${i}, this.value)" style="background:var(--ink4);border:1px solid var(--border);color:var(--cream);font-family:'Crimson Pro',serif;font-size:12px;padding:3px 8px;cursor:pointer;outline:none;">
             <option value="todo" ${a.status==='todo'?'selected':''}>À venir</option>
             <option value="wip"  ${a.status==='wip' ?'selected':''}>En cours</option>
             <option value="done" ${a.status==='done'?'selected':''}>Terminé</option>
@@ -1267,25 +1289,28 @@ function renderActes() {
         </div>
         <input type="range" min="0" max="100" value="${a.pct}"
           style="width:110px;accent-color:var(--gold);cursor:pointer"
-          oninput="updateActePct(${i}, this.value)">
+          oninput="window.updateActePct(${i}, this.value)">
       </div>`;
     list.appendChild(div);
   });
 }
 
-function updateActePct(i, val) {
+window.updateActePct = async function(i, val) {
   actes[i].pct = parseInt(val);
   document.getElementById('bar-' + i).style.width = val + '%';
   document.getElementById('pct-label-' + i).textContent = val + '%';
-  if (val == 100) { actes[i].status = 'done'; renderActes(); }
-  else if (val > 0 && actes[i].status === 'todo') { actes[i].status = 'wip'; renderActes(); }
+  if (val == 100) actes[i].status = 'done';
+  else if (val > 0 && actes[i].status === 'todo') actes[i].status = 'wip';
+  await setDoc(doc(db, 'actes', actes[i].id), { pct: actes[i].pct, status: actes[i].status });
+  renderActes();
   renderMiniProgress();
 }
 
-function updateActeStatus(i, val) {
+window.updateActeStatus = async function(i, val) {
   actes[i].status = val;
-  if (val === 'done') { actes[i].pct = 100; }
-  if (val === 'todo') { actes[i].pct = 0; }
+  if (val === 'done') actes[i].pct = 100;
+  if (val === 'todo') actes[i].pct = 0;
+  await setDoc(doc(db, 'actes', actes[i].id), { pct: actes[i].pct, status: actes[i].status });
   renderActes();
   renderMiniProgress();
 }
