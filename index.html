@@ -896,6 +896,10 @@ body {
       <div class="nav-item" onclick="showPanel('progress', this)">
         <span class="nav-icon">✦</span> Vendée Uprising
       </div>
+      <div class="nav-section" style="margin-top:8px;">Admin</div>
+      <div class="nav-item" onclick="showPanel('membres', this)">
+        <span class="nav-icon">◉</span> Membres
+      </div>
     </nav>
 
     <div class="sidebar-footer">
@@ -1014,77 +1018,118 @@ body {
       <div class="panel" id="panel-notes">
         <div class="section-head">
           <h2>Notes & Documents</h2>
-          <button class="btn-add">+ Nouvelle note</button>
+          <button class="btn-add" onclick="window.openNoteModal()">+ Nouvelle note</button>
         </div>
-        <div class="notes-grid">
-          <div class="note-card gold">
-            <div class="note-tag">Game Design</div>
-            <div class="note-title">Système de flags narratifs — Architecture Lua</div>
-            <div class="note-preview">Variables de suivi des choix : foi, vengeance, relation_charette, leadership. Chaque acte modifie les valeurs...</div>
-            <div class="note-meta"><span>Direction</span><span>28 mars 2026</span></div>
-          </div>
-          <div class="note-card red">
-            <div class="note-tag">Histoire</div>
-            <div class="note-title">Chronologie de la Guerre de Vendée — 1793/1796</div>
-            <div class="note-preview">Dates clés à respecter pour la cohérence historique. Bataille de Torfou, Virée de Galerne, Colonnes Infernales...</div>
-            <div class="note-meta"><span>Narrateur</span><span>25 mars 2026</span></div>
-          </div>
-          <div class="note-card green">
-            <div class="note-tag">Développement</div>
-            <div class="note-title">Architecture ModuleScript — Moteur narratif</div>
-            <div class="note-preview">Structure des scripts : NarrativeEngine, DialogueSystem, RelationTracker, InventoryModule. Hiérarchie Roblox...</div>
-            <div class="note-meta"><span>Resp. Dev</span><span>27 mars 2026</span></div>
-          </div>
-          <div class="note-card blue">
-            <div class="note-tag">UI / UX</div>
-            <div class="note-title">Maquettes interface dialogue — Style cinématique</div>
-            <div class="note-preview">DialogBox en bas d'écran, portrait personnage à gauche, choix animés avec timer visible. Inspiration Detroit: Become Human...</div>
-            <div class="note-meta"><span>UI Designer</span><span>23 mars 2026</span></div>
-          </div>
-        </div>
+        <div class="notes-grid" id="notes-grid"><div style="color:var(--cream3);font-style:italic;font-size:13px">Chargement...</div></div>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /dashboard -->
+      <!-- PANEL MEMBRES -->
+      <div class="panel" id="panel-membres">
+        <div class="section-head">
+          <h2>Gestion des membres</h2>
+          <button class="btn-add" onclick="window.openMembreModal()">+ Membre</button>
+        </div>
+        <div id="membres-list"></div>
+      </div>
 
-<!-- ADD TASK MODAL -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TÂCHE -->
 <div class="modal-overlay" id="task-modal" onclick="closeTaskModalOutside(event)">
   <div class="modal-box">
     <button class="modal-close-btn" onclick="closeTaskModal()">✕</button>
-    <div class="modal-title">Nouvelle tâche</div>
-
-    <div class="field">
-      <label>Intitulé</label>
-      <input type="text" id="new-task-name" placeholder="Description de la tâche...">
+    <div class="modal-title" id="task-modal-title">Nouvelle tâche</div>
+    <div class="field"><label>Intitulé</label><input type="text" id="new-task-name" placeholder="Description..."></div>
+    <div class="field"><label>Assigné à</label>
+      <select id="new-task-assignee"></select>
     </div>
-    <div class="field">
-      <label>Assigné à</label>
-      <select id="new-task-assignee">
-        <option value="Guirrie">Guirrie (DDP)</option>
-        <option value="Lomol">Lomol (DDP)</option>
-        <option value="Xentrax">Xentrax (DDP)</option>
-        <option value="1baba">1baba (DDP)</option>
-        <option value="Théo">Théo (DDP)</option>
-        <option value="Anaë">Anaë (RD)</option>
-        <option value="Elioth">Elioth (Staff)</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Priorité</label>
+    <div class="field"><label>Priorité</label>
       <select id="new-task-prio">
         <option value="haute">Haute</option>
         <option value="moyenne" selected>Moyenne</option>
         <option value="basse">Basse</option>
       </select>
     </div>
-    <button class="btn-login" onclick="addTask()">Ajouter la tâche</button>
+    <button class="btn-login" id="task-submit-btn" onclick="window.submitTask()">Ajouter</button>
+  </div>
+</div>
+
+<!-- MODAL ANNONCE -->
+<div class="modal-overlay" id="announce-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="document.getElementById('announce-modal').classList.remove('open')">✕</button>
+    <div class="modal-title" id="announce-modal-title">Nouvelle annonce</div>
+    <input type="hidden" id="announce-edit-id">
+    <div class="field"><label>Titre</label><input type="text" id="ann-title" placeholder="Titre de l'annonce..."></div>
+    <div class="field"><label>Catégorie</label>
+      <select id="ann-cat">
+        <option value="Direction">Direction</option>
+        <option value="Développement">Développement</option>
+        <option value="Recrutement">Recrutement</option>
+        <option value="Lore">Lore</option>
+        <option value="Build">Build</option>
+      </select>
+    </div>
+    <button class="btn-login" onclick="window.submitAnnounce()">Publier</button>
+  </div>
+</div>
+
+<!-- MODAL NOTE -->
+<div class="modal-overlay" id="note-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="document.getElementById('note-modal').classList.remove('open')">✕</button>
+    <div class="modal-title" id="note-modal-title">Nouvelle note</div>
+    <input type="hidden" id="note-edit-id">
+    <div class="field"><label>Titre</label><input type="text" id="note-title" placeholder="Titre de la note..."></div>
+    <div class="field"><label>Catégorie</label>
+      <select id="note-cat">
+        <option value="Game Design">Game Design</option>
+        <option value="Histoire">Histoire</option>
+        <option value="Développement">Développement</option>
+        <option value="UI / UX">UI / UX</option>
+        <option value="Build">Build</option>
+        <option value="Autre">Autre</option>
+      </select>
+    </div>
+    <div class="field"><label>Couleur</label>
+      <select id="note-color">
+        <option value="gold">Or</option>
+        <option value="red">Rouge</option>
+        <option value="green">Vert</option>
+        <option value="blue">Bleu</option>
+      </select>
+    </div>
+    <div class="field"><label>Contenu</label><textarea id="note-content" rows="4" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--cream);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 14px;outline:none;resize:vertical" placeholder="Contenu de la note..."></textarea></div>
+    <div class="field"><label>Auteur</label><input type="text" id="note-author" placeholder="Votre nom..."></div>
+    <button class="btn-login" onclick="window.submitNote()">Enregistrer</button>
+  </div>
+</div>
+
+<!-- MODAL MEMBRE -->
+<div class="modal-overlay" id="membre-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="document.getElementById('membre-modal').classList.remove('open')">✕</button>
+    <div class="modal-title" id="membre-modal-title">Nouveau membre</div>
+    <input type="hidden" id="membre-edit-id">
+    <div class="field"><label>Identifiant</label><input type="text" id="mb-id" placeholder="identifiant..."></div>
+    <div class="field"><label>Nom affiché</label><input type="text" id="mb-name" placeholder="Nom..."></div>
+    <div class="field"><label>Mot de passe</label><input type="text" id="mb-pass" placeholder="Mot de passe..."></div>
+    <div class="field"><label>Rôle</label>
+      <select id="mb-role">
+        <option value="directeur">Directeur de Projet (DDP)</option>
+        <option value="resp-dev">Responsable Développement (RD)</option>
+        <option value="staff">Staff</option>
+      </select>
+    </div>
+    <button class="btn-login" onclick="window.submitMembre()">Enregistrer</button>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC6C4u4CW25tQ1IJZTSgIZi6OFeu-KzCWg",
@@ -1147,12 +1192,16 @@ function enterDashboard() {
   document.getElementById('login-page').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
   document.getElementById('user-name').textContent = currentUser.name;
-  document.getElementById('user-role-label').textContent = currentUser.label;
+  document.getElementById('user-role-label').textContent = currentUser.label||currentUser.role;
   document.getElementById('user-avatar').textContent = currentUser.name[0].toUpperCase();
   document.getElementById('welcome-msg').textContent = `Bienvenue, ${currentUser.name}.`;
   document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   listenTasks();
   loadActes();
+  listenAnnounces();
+  listenNotes();
+  listenMembres();
+  initMembresDefaut();
 }
 
 window.doLogout = function() {
@@ -1170,7 +1219,7 @@ window.showPanel = function(id, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('panel-' + id).classList.add('active');
   el.classList.add('active');
-  const titles = { home:'Tableau de bord', tasks:'Tâches', progress:'Avancement', notes:'Notes & Documents' };
+  const titles = { home:'Tableau de bord', tasks:'Tâches', progress:'Avancement', notes:'Notes & Documents', membres:'Gestion des membres' };
   document.getElementById('topbar-title').textContent = titles[id] || '';
 }
 
@@ -1206,6 +1255,7 @@ function renderTasks() {
       <div class="task-assignee">${t.assignee}</div>
       <div style="display:flex;align-items:center;gap:8px">
         <div class="task-prio prio-${t.prio}">${t.prio}</div>
+        <span onclick="window.editTask('${t.firestoreId}','${t.name.replace(/'/g,"\\'")}','${t.assignee}','${t.prio}')" style="cursor:pointer;color:var(--gold);font-size:13px;border-bottom:1px solid var(--gold-d)">✎</span>
         <div onclick="window.deleteTask('${t.firestoreId}')" style="cursor:pointer;color:var(--cream3);font-size:16px;line-height:1;padding:2px 6px;border:1px solid var(--border);transition:color .15s" onmouseover="this.style.color='#E89090'" onmouseout="this.style.color='var(--cream3)'">✕</div>
       </div>`;
     list.appendChild(div);
@@ -1214,6 +1264,16 @@ function renderTasks() {
 
 window.toggleTask = async function(firestoreId, done) {
   await updateDoc(doc(db, 'tasks', firestoreId), { done: !done });
+}
+
+window.editTask = function(id, name, assignee, prio) {
+  window._editTaskId = id;
+  document.getElementById('new-task-name').value = name;
+  document.getElementById('new-task-assignee').value = assignee;
+  document.getElementById('new-task-prio').value = prio;
+  document.getElementById('task-modal-title').textContent = 'Modifier la tâche';
+  document.getElementById('task-submit-btn').textContent = 'Enregistrer';
+  document.getElementById('task-modal').classList.add('open');
 }
 
 window.deleteTask = async function(firestoreId) {
@@ -1231,21 +1291,17 @@ function updateDoneCount() {
   document.getElementById('tasks-done-count').textContent = tasks.filter(t => t.done).length;
 }
 
-window.openTaskModal  = () => document.getElementById('task-modal').classList.add('open');
+window.openTaskModal  = () => { document.getElementById('task-modal-title').textContent='Nouvelle tâche'; document.getElementById('task-submit-btn').textContent='Ajouter'; window._editTaskId=null; document.getElementById('new-task-name').value=''; document.getElementById('task-modal').classList.add('open'); }
 window.closeTaskModal = () => document.getElementById('task-modal').classList.remove('open');
-window.closeTaskModalOutside = e => { if (e.target === document.getElementById('task-modal')) window.closeTaskModal(); }
+window.closeTaskModalOutside = e => { if (e.target===document.getElementById('task-modal')) window.closeTaskModal(); }
 
-window.addTask = async function() {
+window.submitTask = async function() {
   const name = document.getElementById('new-task-name').value.trim();
   if (!name) return;
-  await addDoc(collection(db, 'tasks'), {
-    name,
-    assignee: document.getElementById('new-task-assignee').value,
-    prio:     document.getElementById('new-task-prio').value,
-    done:     false,
-    createdAt: Date.now()
-  });
-  document.getElementById('new-task-name').value = '';
+  const data = { name, assignee:document.getElementById('new-task-assignee').value, prio:document.getElementById('new-task-prio').value, done:false };
+  if (window._editTaskId) await updateDoc(doc(db,'tasks',window._editTaskId),{name:data.name,assignee:data.assignee,prio:data.prio});
+  else await addDoc(collection(db,'tasks'),{...data,createdAt:Date.now()});
+  document.getElementById('new-task-name').value='';
   window.closeTaskModal();
 }
 
@@ -1344,6 +1400,229 @@ function renderMiniProgress() {
     document.getElementById('topbar-title').textContent = 'Avancement';
   };
   el.appendChild(more);
+}
+
+// ═══ ANNONCES ═══
+const catColors = {
+  Direction:'var(--gold)', Développement:'#7EC89A', Recrutement:'#E89090',
+  Lore:'#B09EE0', Build:'#80C8E8'
+};
+
+function listenAnnounces() {
+  onSnapshot(query(collection(db,'announces')), snap => {
+    const list = document.getElementById('announces-list');
+    if (!list) return;
+    const docs = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.createdAt-a.createdAt).slice(0,5);
+    if (docs.length === 0) { list.innerHTML='<div style="color:var(--cream3);font-style:italic;font-size:13px">Aucune annonce.</div>'; return; }
+    list.innerHTML = docs.map(a=>`
+      <div class="announce-item" style="position:relative">
+        <div class="announce-top">
+          <div class="announce-dot" style="background:${catColors[a.cat]||'var(--gold)'}"></div>
+          <span class="announce-cat">${a.cat}</span>
+          <span class="announce-date">${new Date(a.createdAt).toLocaleDateString('fr-FR')}</span>
+        </div>
+        <div class="announce-title">${a.title}</div>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <span onclick="window.editAnnounce('${a.id}','${a.title.replace(/'/g,"\\'")}','${a.cat}')" style="font-size:11px;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-d)">Modifier</span>
+          <span onclick="window.deleteAnnounce('${a.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>
+        </div>
+      </div>`).join('');
+  });
+}
+
+window.openAnnounceModal = function(id='',title='',cat='Direction') {
+  document.getElementById('announce-edit-id').value = id;
+  document.getElementById('ann-title').value = title;
+  document.getElementById('ann-cat').value = cat;
+  document.getElementById('announce-modal-title').textContent = id ? 'Modifier l\'annonce' : 'Nouvelle annonce';
+  document.getElementById('announce-modal').classList.add('open');
+}
+
+window.editAnnounce = function(id,title,cat) { window.openAnnounceModal(id,title,cat); }
+
+window.submitAnnounce = async function() {
+  const id    = document.getElementById('announce-edit-id').value;
+  const title = document.getElementById('ann-title').value.trim();
+  const cat   = document.getElementById('ann-cat').value;
+  if (!title) return;
+  if (id) await updateDoc(doc(db,'announces',id),{title,cat});
+  else await addDoc(collection(db,'announces'),{title,cat,createdAt:Date.now()});
+  document.getElementById('announce-modal').classList.remove('open');
+  document.getElementById('ann-title').value='';
+}
+
+window.deleteAnnounce = async function(id) {
+  if (confirm('Supprimer cette annonce ?')) await deleteDoc(doc(db,'announces',id));
+}
+
+// ═══ NOTES ═══
+function listenNotes() {
+  onSnapshot(collection(db,'notes'), snap => {
+    const grid = document.getElementById('notes-grid');
+    if (!grid) return;
+    const docs = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.createdAt-a.createdAt);
+    if (docs.length===0) { grid.innerHTML='<div style="color:var(--cream3);font-style:italic;font-size:13px">Aucune note.</div>'; return; }
+    grid.innerHTML = docs.map(n=>`
+      <div class="note-card ${n.color||'gold'}">
+        <div class="note-tag">${n.cat}</div>
+        <div class="note-title">${n.title}</div>
+        <div class="note-preview">${(n.content||'').substring(0,120)}${n.content&&n.content.length>120?'...':''}</div>
+        <div class="note-meta"><span>${n.author||''}</span><span>${new Date(n.createdAt).toLocaleDateString('fr-FR')}</span></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <span onclick="window.editNote('${n.id}')" style="font-size:11px;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-d)">Modifier</span>
+          <span onclick="window.deleteNote('${n.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>
+        </div>
+      </div>`).join('');
+  });
+}
+
+let notesCache = {};
+window.openNoteModal = function() {
+  document.getElementById('note-edit-id').value='';
+  document.getElementById('note-title').value='';
+  document.getElementById('note-content').value='';
+  document.getElementById('note-author').value=currentUser?.name||'';
+  document.getElementById('note-modal-title').textContent='Nouvelle note';
+  document.getElementById('note-modal').classList.add('open');
+}
+
+window.editNote = async function(id) {
+  const snap = await getDoc(doc(db,'notes',id));
+  if (!snap.exists()) return;
+  const n = snap.data();
+  document.getElementById('note-edit-id').value=id;
+  document.getElementById('note-title').value=n.title||'';
+  document.getElementById('note-cat').value=n.cat||'Game Design';
+  document.getElementById('note-color').value=n.color||'gold';
+  document.getElementById('note-content').value=n.content||'';
+  document.getElementById('note-author').value=n.author||'';
+  document.getElementById('note-modal-title').textContent='Modifier la note';
+  document.getElementById('note-modal').classList.add('open');
+}
+
+window.submitNote = async function() {
+  const id      = document.getElementById('note-edit-id').value;
+  const title   = document.getElementById('note-title').value.trim();
+  const cat     = document.getElementById('note-cat').value;
+  const color   = document.getElementById('note-color').value;
+  const content = document.getElementById('note-content').value.trim();
+  const author  = document.getElementById('note-author').value.trim();
+  if (!title) return;
+  const data = {title,cat,color,content,author,createdAt:id?undefined:Date.now()};
+  if (!data.createdAt) delete data.createdAt;
+  if (id) await updateDoc(doc(db,'notes',id),{title,cat,color,content,author});
+  else await addDoc(collection(db,'notes'),{title,cat,color,content,author,createdAt:Date.now()});
+  document.getElementById('note-modal').classList.remove('open');
+}
+
+window.deleteNote = async function(id) {
+  if (confirm('Supprimer cette note ?')) await deleteDoc(doc(db,'notes',id));
+}
+
+// ═══ MEMBRES ═══
+const roleLabels = { directeur:'Directeur de Projet (DDP)', 'resp-dev':'Responsable Développement (RD)', staff:'Staff' };
+
+function listenMembres() {
+  onSnapshot(collection(db,'membres'), snap => {
+    const list = document.getElementById('membres-list');
+    if (!list) return;
+    const docs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if (docs.length===0) { list.innerHTML='<div style="color:var(--cream3);font-style:italic;font-size:13px">Aucun membre.</div>'; return; }
+    list.innerHTML = docs.map(m=>`
+      <div class="task-item" style="grid-template-columns:auto 1fr 1fr auto auto;gap:14px">
+        <div class="user-avatar" style="width:32px;height:32px;font-size:13px">${(m.name||'?')[0].toUpperCase()}</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--cream)">${m.name}</div>
+          <div style="font-size:12px;color:var(--cream3);font-style:italic">${m.id}</div>
+        </div>
+        <div style="font-size:13px;color:var(--gold);font-style:italic">${roleLabels[m.role]||m.role}</div>
+        <div style="font-size:12px;color:var(--cream3);font-family:'JetBrains Mono',monospace">${m.pass}</div>
+        <div style="display:flex;gap:8px">
+          <span onclick="window.editMembre('${m.id}')" style="font-size:11px;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-d)">Modifier</span>
+          <span onclick="window.deleteMembre('${m.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>
+        </div>
+      </div>`).join('');
+    populateAssigneeSelect(docs);
+  });
+}
+
+function populateAssigneeSelect(membres) {
+  const sel = document.getElementById('new-task-assignee');
+  if (!sel) return;
+  sel.innerHTML = membres.map(m=>`<option value="${m.name}">${m.name} (${roleLabels[m.role]||m.role})</option>`).join('');
+}
+
+window.openMembreModal = function() {
+  document.getElementById('membre-edit-id').value='';
+  document.getElementById('mb-id').value='';
+  document.getElementById('mb-name').value='';
+  document.getElementById('mb-pass').value='';
+  document.getElementById('mb-role').value='directeur';
+  document.getElementById('mb-id').disabled=false;
+  document.getElementById('membre-modal-title').textContent='Nouveau membre';
+  document.getElementById('membre-modal').classList.add('open');
+}
+
+window.editMembre = async function(id) {
+  const snap = await getDoc(doc(db,'membres',id));
+  if (!snap.exists()) return;
+  const m = snap.data();
+  document.getElementById('membre-edit-id').value=id;
+  document.getElementById('mb-id').value=m.id||id;
+  document.getElementById('mb-id').disabled=true;
+  document.getElementById('mb-name').value=m.name||'';
+  document.getElementById('mb-pass').value=m.pass||'';
+  document.getElementById('mb-role').value=m.role||'staff';
+  document.getElementById('membre-modal-title').textContent='Modifier le membre';
+  document.getElementById('membre-modal').classList.add('open');
+}
+
+window.submitMembre = async function() {
+  const editId = document.getElementById('membre-edit-id').value;
+  const id     = document.getElementById('mb-id').value.trim().toLowerCase();
+  const name   = document.getElementById('mb-name').value.trim();
+  const pass   = document.getElementById('mb-pass').value.trim();
+  const role   = document.getElementById('mb-role').value;
+  if (!id||!name||!pass) return;
+  const data = {id,name,pass,role,label:roleLabels[role]||role};
+  await setDoc(doc(db,'membres',id),data);
+  document.getElementById('membre-modal').classList.remove('open');
+}
+
+window.deleteMembre = async function(id) {
+  if (confirm('Supprimer ce membre ?')) await deleteDoc(doc(db,'membres',id));
+}
+
+// ═══ INIT MEMBRES PAR DÉFAUT ═══
+async function initMembresDefaut() {
+  const snap = await getDocs(collection(db,'membres'));
+  if (!snap.empty) return;
+  const defaut = [
+    {id:'guirrie',name:'Guirrie',pass:'Ven1793!G',role:'directeur'},
+    {id:'lomol',  name:'Lomol',  pass:'Ven1793!L',role:'directeur'},
+    {id:'xentrax',name:'Xentrax',pass:'Ven1793!X',role:'directeur'},
+    {id:'1baba',  name:'1baba',  pass:'Ven1793!B',role:'directeur'},
+    {id:'theo',   name:'Théo',   pass:'Ven1793!T',role:'directeur'},
+    {id:'anae',   name:'Anaë',   pass:'Ven1793!A',role:'resp-dev'},
+    {id:'elioth', name:'Elioth', pass:'Ven1793!E',role:'staff'},
+  ];
+  for (const m of defaut) await setDoc(doc(db,'membres',m.id),{...m,label:roleLabels[m.role]});
+}
+
+// ═══ LOGIN DEPUIS FIREBASE ═══
+window.doLogin = async function() {
+  const role = document.getElementById('login-role').value;
+  const user = document.getElementById('login-user').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  const err  = document.getElementById('login-error');
+  if (!role||!user||!pass) { err.style.display='block';err.textContent='Veuillez remplir tous les champs.';return; }
+  const snap = await getDoc(doc(db,'membres',user));
+  if (!snap.exists()) { err.style.display='block';err.textContent='Identifiant introuvable.';return; }
+  const m = snap.data();
+  if (m.pass!==pass||m.role!==role) { err.style.display='block';err.textContent='Identifiant ou mot de passe incorrect.';return; }
+  err.style.display='none';
+  currentUser={...m};
+  enterDashboard();
 }
 </script>
 </body>
