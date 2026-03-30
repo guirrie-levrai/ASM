@@ -850,10 +850,10 @@ body {
 
       <div class="field">
         <label>Mot de passe</label>
-        <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')window.doLogin()">
       </div>
 
-      <button class="btn-login" onclick="doLogin()">Accéder au tableau de bord</button>
+      <button class="btn-login" onclick="window.doLogin()">Accéder au tableau de bord</button>
       <p class="login-note">Contactez la direction pour obtenir vos accès.</p>
     </div>
   </div>
@@ -903,7 +903,7 @@ body {
     </nav>
 
     <div class="sidebar-footer">
-      <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+      <button class="btn-logout" onclick="window.doLogout()">Déconnexion</button>
     </div>
   </div>
 
@@ -1127,6 +1127,60 @@ body {
   </div>
 </div>
 
+<script>
+// Membres par défaut (modifiables depuis l'interface)
+const DEFAULT_MEMBRES = [
+  {id:'guirrie',name:'Guirrie',pass:'Ven1793!G',role:'directeur',label:'Directeur de Projet (DDP)'},
+  {id:'lomol',  name:'Lomol',  pass:'Ven1793!L',role:'directeur',label:'Directeur de Projet (DDP)'},
+  {id:'xentrax',name:'Xentrax',pass:'Ven1793!X',role:'directeur',label:'Directeur de Projet (DDP)'},
+  {id:'1baba',  name:'1baba',  pass:'Ven1793!B',role:'directeur',label:'Directeur de Projet (DDP)'},
+  {id:'theo',   name:'Théo',   pass:'Ven1793!T',role:'directeur',label:'Directeur de Projet (DDP)'},
+  {id:'anae',   name:'Anaë',   pass:'Ven1793!A',role:'resp-dev', label:'Responsable Développement (RD)'},
+  {id:'elioth', name:'Elioth', pass:'Ven1793!E',role:'staff',    label:'Staff'},
+];
+
+function getMembres() {
+  try {
+    const s = localStorage.getItem('asm_membres');
+    return s ? JSON.parse(s) : DEFAULT_MEMBRES;
+  } catch(e) { return DEFAULT_MEMBRES; }
+}
+
+function saveMembres(list) {
+  try { localStorage.setItem('asm_membres', JSON.stringify(list)); } catch(e) {}
+}
+
+window.doLogin = function() {
+  const role = document.getElementById('login-role').value;
+  const user = document.getElementById('login-user').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  const err  = document.getElementById('login-error');
+  err.style.display = 'none';
+  if (!role || !user || !pass) {
+    err.style.display='block'; err.textContent='Veuillez remplir tous les champs.'; return;
+  }
+  const membres = getMembres();
+  const m = membres.find(mb => mb.id === user);
+  if (!m || m.pass !== pass || m.role !== role) {
+    err.style.display='block'; err.textContent='Identifiant ou mot de passe incorrect.'; return;
+  }
+  window._currentUser = m;
+  if (window._enterDashboard) window._enterDashboard();
+}
+
+window.doLogout = function() {
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-role').value = '';
+  window._currentUser = null;
+}
+
+window.getMembres   = getMembres;
+window.saveMembres  = saveMembres;
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -1143,20 +1197,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
-// ═══ COMPTES ÉQUIPE ═══
-const ACCOUNTS = {
-  guirrie: { pass:'Ven1793!G', role:'directeur', label:'Directeur de Projet', name:'Guirrie' },
-  lomol:   { pass:'Ven1793!L', role:'directeur', label:'Directeur de Projet', name:'Lomol'   },
-  xentrax: { pass:'Ven1793!X', role:'directeur', label:'Directeur de Projet', name:'Xentrax' },
-  '1baba': { pass:'Ven1793!B', role:'directeur', label:'Directeur de Projet', name:'1baba'   },
-  'théo':  { pass:'Ven1793!T', role:'directeur', label:'Directeur de Projet', name:'Théo'    },
-  theo:    { pass:'Ven1793!T', role:'directeur', label:'Directeur de Projet', name:'Théo'    },
-  'anaë':  { pass:'Ven1793!A', role:'resp-dev',  label:'Responsable Développement', name:'Anaë' },
-  anae:    { pass:'Ven1793!A', role:'resp-dev',  label:'Responsable Développement', name:'Anaë' },
-  elioth:  { pass:'Ven1793!E', role:'staff',     label:'Staff',               name:'Elioth'  },
-};
-
-// ═══ ÉTAT LOCAL ═══
 let tasks = [];
 let actes = [
   { id:'acte1',  num:'Acte I',    name:'La Terre et le Ciel',      pct:0, status:'todo' },
@@ -1171,49 +1211,26 @@ let actes = [
   { id:'acte10', num:'Acte X',    name:'La Fin d\'un Monde',        pct:0, status:'todo' },
 ];
 let taskFilter = 'all';
-let currentUser = null;
 const barFill = { done:'#7EC89A', wip:'var(--gold)', todo:'rgba(255,255,255,0.15)' };
 
-// ═══ LOGIN ═══
-window.doLogin = function() {
-  const role = document.getElementById('login-role').value;
-  const user = document.getElementById('login-user').value.trim();
-  const pass = document.getElementById('login-pass').value;
-  const err  = document.getElementById('login-error');
-  if (!role || !user || !pass) { err.style.display='block'; err.textContent='Veuillez remplir tous les champs.'; return; }
-  const acc = ACCOUNTS[user.toLowerCase()];
-  if (!acc || acc.pass !== pass || acc.role !== role) { err.style.display='block'; err.textContent='Identifiant ou mot de passe incorrect.'; return; }
-  err.style.display = 'none';
-  currentUser = { ...acc, id: user };
-  enterDashboard();
-}
+function currentUser() { return window._currentUser || {}; }
 
-function enterDashboard() {
+window._enterDashboard = function() {
+  const u = currentUser();
   document.getElementById('login-page').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
-  document.getElementById('user-name').textContent = currentUser.name;
-  document.getElementById('user-role-label').textContent = currentUser.label||currentUser.role;
-  document.getElementById('user-avatar').textContent = currentUser.name[0].toUpperCase();
-  document.getElementById('welcome-msg').textContent = `Bienvenue, ${currentUser.name}.`;
+  document.getElementById('user-name').textContent = u.name;
+  document.getElementById('user-role-label').textContent = u.label || u.role;
+  document.getElementById('user-avatar').textContent = (u.name||'?')[0].toUpperCase();
+  document.getElementById('welcome-msg').textContent = `Bienvenue, ${u.name}.`;
   document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   listenTasks();
   loadActes();
   listenAnnounces();
   listenNotes();
-  listenMembres();
-  initMembresDefaut();
+  renderMembres();
 }
 
-window.doLogout = function() {
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('login-page').style.display = 'flex';
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('login-role').value = '';
-  currentUser = null;
-}
-
-// ═══ PANELS ═══
 window.showPanel = function(id, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1476,12 +1493,11 @@ function listenNotes() {
   });
 }
 
-let notesCache = {};
 window.openNoteModal = function() {
   document.getElementById('note-edit-id').value='';
   document.getElementById('note-title').value='';
   document.getElementById('note-content').value='';
-  document.getElementById('note-author').value=currentUser?.name||'';
+  document.getElementById('note-author').value=(window._currentUser||{}).name||'';
   document.getElementById('note-modal-title').textContent='Nouvelle note';
   document.getElementById('note-modal').classList.add('open');
 }
@@ -1519,37 +1535,35 @@ window.deleteNote = async function(id) {
   if (confirm('Supprimer cette note ?')) await deleteDoc(doc(db,'notes',id));
 }
 
-// ═══ MEMBRES ═══
+// ═══ MEMBRES (localStorage) ═══
 const roleLabels = { directeur:'Directeur de Projet (DDP)', 'resp-dev':'Responsable Développement (RD)', staff:'Staff' };
 
-function listenMembres() {
-  onSnapshot(collection(db,'membres'), snap => {
-    const list = document.getElementById('membres-list');
-    if (!list) return;
-    const docs = snap.docs.map(d=>({id:d.id,...d.data()}));
-    if (docs.length===0) { list.innerHTML='<div style="color:var(--cream3);font-style:italic;font-size:13px">Aucun membre.</div>'; return; }
-    list.innerHTML = docs.map(m=>`
-      <div class="task-item" style="grid-template-columns:auto 1fr 1fr auto auto;gap:14px">
-        <div class="user-avatar" style="width:32px;height:32px;font-size:13px">${(m.name||'?')[0].toUpperCase()}</div>
-        <div>
-          <div style="font-size:14px;font-weight:500;color:var(--cream)">${m.name}</div>
-          <div style="font-size:12px;color:var(--cream3);font-style:italic">${m.id}</div>
-        </div>
-        <div style="font-size:13px;color:var(--gold);font-style:italic">${roleLabels[m.role]||m.role}</div>
-        <div style="font-size:12px;color:var(--cream3);font-family:'JetBrains Mono',monospace">${m.pass}</div>
-        <div style="display:flex;gap:8px">
-          <span onclick="window.editMembre('${m.id}')" style="font-size:11px;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-d)">Modifier</span>
-          <span onclick="window.deleteMembre('${m.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>
-        </div>
-      </div>`).join('');
-    populateAssigneeSelect(docs);
-  });
+function renderMembres() {
+  const list = document.getElementById('membres-list');
+  if (!list) return;
+  const membres = window.getMembres();
+  if (!membres.length) { list.innerHTML='<div style="color:var(--cream3);font-style:italic;font-size:13px">Aucun membre.</div>'; return; }
+  list.innerHTML = membres.map(m=>`
+    <div class="task-item" style="grid-template-columns:auto 1fr 1fr auto auto;gap:14px">
+      <div class="user-avatar" style="width:32px;height:32px;font-size:13px">${(m.name||'?')[0].toUpperCase()}</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--cream)">${m.name}</div>
+        <div style="font-size:12px;color:var(--cream3);font-style:italic">${m.id}</div>
+      </div>
+      <div style="font-size:13px;color:var(--gold);font-style:italic">${m.label||roleLabels[m.role]||m.role}</div>
+      <div style="font-size:12px;color:var(--cream3);font-family:'JetBrains Mono',monospace">${m.pass}</div>
+      <div style="display:flex;gap:8px">
+        <span onclick="window.editMembre('${m.id}')" style="font-size:11px;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-d)">Modifier</span>
+        <span onclick="window.deleteMembre('${m.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>
+      </div>
+    </div>`).join('');
+  populateAssigneeSelect(membres);
 }
 
 function populateAssigneeSelect(membres) {
   const sel = document.getElementById('new-task-assignee');
   if (!sel) return;
-  sel.innerHTML = membres.map(m=>`<option value="${m.name}">${m.name} (${roleLabels[m.role]||m.role})</option>`).join('');
+  sel.innerHTML = membres.map(m=>`<option value="${m.name}">${m.name} (${m.label||roleLabels[m.role]||m.role})</option>`).join('');
 }
 
 window.openMembreModal = function() {
@@ -1563,12 +1577,11 @@ window.openMembreModal = function() {
   document.getElementById('membre-modal').classList.add('open');
 }
 
-window.editMembre = async function(id) {
-  const snap = await getDoc(doc(db,'membres',id));
-  if (!snap.exists()) return;
-  const m = snap.data();
+window.editMembre = function(id) {
+  const m = window.getMembres().find(mb=>mb.id===id);
+  if (!m) return;
   document.getElementById('membre-edit-id').value=id;
-  document.getElementById('mb-id').value=m.id||id;
+  document.getElementById('mb-id').value=m.id;
   document.getElementById('mb-id').disabled=true;
   document.getElementById('mb-name').value=m.name||'';
   document.getElementById('mb-pass').value=m.pass||'';
@@ -1577,40 +1590,31 @@ window.editMembre = async function(id) {
   document.getElementById('membre-modal').classList.add('open');
 }
 
-window.submitMembre = async function() {
+window.submitMembre = function() {
   const editId = document.getElementById('membre-edit-id').value;
   const id     = document.getElementById('mb-id').value.trim().toLowerCase();
   const name   = document.getElementById('mb-name').value.trim();
   const pass   = document.getElementById('mb-pass').value.trim();
   const role   = document.getElementById('mb-role').value;
   if (!id||!name||!pass) return;
-  const data = {id,name,pass,role,label:roleLabels[role]||role};
-  await setDoc(doc(db,'membres',id),data);
+  let membres = window.getMembres();
+  const label = roleLabels[role]||role;
+  if (editId) membres = membres.map(m=>m.id===editId?{...m,name,pass,role,label}:m);
+  else membres.push({id,name,pass,role,label});
+  window.saveMembres(membres);
   document.getElementById('membre-modal').classList.remove('open');
+  renderMembres();
 }
 
-window.deleteMembre = async function(id) {
-  if (confirm('Supprimer ce membre ?')) await deleteDoc(doc(db,'membres',id));
-}
-
-// ═══ INIT MEMBRES PAR DÉFAUT ═══
-async function initMembresDefaut() {
-  const snap = await getDocs(collection(db,'membres'));
-  if (!snap.empty) return;
-  const defaut = [
-    {id:'guirrie',name:'Guirrie',pass:'Ven1793!G',role:'directeur'},
-    {id:'lomol',  name:'Lomol',  pass:'Ven1793!L',role:'directeur'},
-    {id:'xentrax',name:'Xentrax',pass:'Ven1793!X',role:'directeur'},
-    {id:'1baba',  name:'1baba',  pass:'Ven1793!B',role:'directeur'},
-    {id:'theo',   name:'Théo',   pass:'Ven1793!T',role:'directeur'},
-    {id:'anae',   name:'Anaë',   pass:'Ven1793!A',role:'resp-dev'},
-    {id:'elioth', name:'Elioth', pass:'Ven1793!E',role:'staff'},
-  ];
-  for (const m of defaut) await setDoc(doc(db,'membres',m.id),{...m,label:roleLabels[m.role]});
+window.deleteMembre = function(id) {
+  if (!confirm('Supprimer ce membre ?')) return;
+  const membres = window.getMembres().filter(m=>m.id!==id);
+  window.saveMembres(membres);
+  renderMembres();
 }
 
 // ═══ LOGIN DEPUIS FIREBASE ═══
-window.doLogin = async function() {
+window._doLoginFn = async function() {
   const role = document.getElementById('login-role').value;
   const user = document.getElementById('login-user').value.trim().toLowerCase();
   const pass = document.getElementById('login-pass').value;
@@ -1623,6 +1627,15 @@ window.doLogin = async function() {
   err.style.display='none';
   currentUser={...m};
   enterDashboard();
+}
+
+window._doLogoutFn = function() {
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-role').value = '';
+  currentUser = null;
 }
 </script>
 </body>
