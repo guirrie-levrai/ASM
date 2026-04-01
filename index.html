@@ -837,9 +837,14 @@ body {
         <label>Rôle</label>
         <select id="login-role">
           <option value="">Sélectionner votre rôle...</option>
-          <option value="directeur">Directeur de Projet (DDP)</option>
+          <option value="ddp">Directeur de Projet (DDP)</option>
+          <option value="ddpa">Directeur Adjoint (DDPA)</option>
           <option value="resp-dev">Responsable Développement (RD)</option>
-          <option value="staff">Staff</option>
+          <option value="developpeur">Développeur (D)</option>
+          <option value="builder">Builder</option>
+          <option value="scripteur">Scripteur</option>
+          <option value="testeur">Testeur</option>
+          <option value="voix">Voix</option>
         </select>
       </div>
 
@@ -897,7 +902,7 @@ body {
         <span class="nav-icon">✦</span> Vendée Uprising
       </div>
       <div class="nav-section" style="margin-top:8px;">Admin</div>
-      <div class="nav-item" onclick="showPanel('membres', this)">
+      <div id="nav-membres" class="nav-item" onclick="showPanel('membres', this)">
         <span class="nav-icon">◉</span> Membres
       </div>
     </nav>
@@ -946,40 +951,9 @@ body {
           <div class="card">
             <div class="card-title">
               Annonces internes
-              <span class="card-title-badge">Récent</span>
+              <button id="btn-add-announce" class="btn-add" style="font-size:11px;padding:4px 12px" onclick="window.openAnnounceModal()">+ Annonce</button>
             </div>
-            <div class="announce-item">
-              <div class="announce-top">
-                <div class="announce-dot" style="background:var(--gold)"></div>
-                <span class="announce-cat">Développement</span>
-                <span class="announce-date">Aujourd'hui</span>
-              </div>
-              <div class="announce-title">Début du dev de l'Acte I</div>
-            </div>
-            <div class="announce-item">
-              <div class="announce-top">
-                <div class="announce-dot" style="background:var(--gold)"></div>
-                <span class="announce-cat">Développement</span>
-                <span class="announce-date">Aujourd'hui</span>
-              </div>
-              <div class="announce-title">10 actes, 30 scènes confirmées</div>
-            </div>
-            <div class="announce-item">
-              <div class="announce-top">
-                <div class="announce-dot" style="background:#E89090"></div>
-                <span class="announce-cat">Recrutement</span>
-                <span class="announce-date">22 mars</span>
-              </div>
-              <div class="announce-title">Recherche builder expérimenté pour l'Acte I</div>
-            </div>
-            <div class="announce-item">
-              <div class="announce-top">
-                <div class="announce-dot" style="background:#E89090"></div>
-                <span class="announce-cat">Recrutement</span>
-                <span class="announce-date">25 mars</span>
-              </div>
-              <div class="announce-title">Recrutement des voices actors en cours</div>
-            </div>
+            <div id="announces-list"><div style="color:var(--cream3);font-style:italic;font-size:13px">Chargement...</div></div>
           </div>
 
           <div class="card">
@@ -993,7 +967,7 @@ body {
       <div class="panel" id="panel-tasks">
         <div class="section-head">
           <h2>Tâches de l'équipe</h2>
-          <button class="btn-add" onclick="openTaskModal()">+ Nouvelle tâche</button>
+          <button id="btn-add-task" class="btn-add" onclick="window.openTaskModal()">+ Nouvelle tâche</button>
         </div>
 
         <div class="task-filters">
@@ -1018,7 +992,7 @@ body {
       <div class="panel" id="panel-notes">
         <div class="section-head">
           <h2>Notes & Documents</h2>
-          <button class="btn-add" onclick="window.openNoteModal()">+ Nouvelle note</button>
+          <button id="btn-add-note" class="btn-add" onclick="window.openNoteModal()">+ Nouvelle note</button>
         </div>
         <div class="notes-grid" id="notes-grid"><div style="color:var(--cream3);font-style:italic;font-size:13px">Chargement...</div></div>
       </div>
@@ -1102,6 +1076,13 @@ body {
       </select>
     </div>
     <div class="field"><label>Contenu</label><textarea id="note-content" rows="4" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--cream);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 14px;outline:none;resize:vertical" placeholder="Contenu de la note..."></textarea></div>
+    <div class="field"><label>Pièce jointe (image ou PDF)</label>
+      <input type="file" id="note-file" accept="image/*,.pdf" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--cream);font-family:'Crimson Pro',serif;font-size:14px;padding:10px 14px;cursor:pointer">
+      <div id="note-file-preview" style="margin-top:8px;display:none"></div>
+      <input type="hidden" id="note-file-data">
+      <input type="hidden" id="note-file-name">
+      <input type="hidden" id="note-file-type">
+    </div>
     <div class="field"><label>Auteur</label><input type="text" id="note-author" placeholder="Votre nom..."></div>
     <button class="btn-login" onclick="window.submitNote()">Enregistrer</button>
   </div>
@@ -1118,9 +1099,14 @@ body {
     <div class="field"><label>Mot de passe</label><input type="text" id="mb-pass" placeholder="Mot de passe..."></div>
     <div class="field"><label>Rôle</label>
       <select id="mb-role">
-        <option value="directeur">Directeur de Projet (DDP)</option>
+        <option value="ddp">Directeur de Projet (DDP)</option>
+        <option value="ddpa">Directeur Adjoint (DDPA)</option>
         <option value="resp-dev">Responsable Développement (RD)</option>
-        <option value="staff">Staff</option>
+        <option value="developpeur">Développeur (D)</option>
+        <option value="builder">Builder</option>
+        <option value="scripteur">Scripteur</option>
+        <option value="testeur">Testeur</option>
+        <option value="voix">Voix</option>
       </select>
     </div>
     <button class="btn-login" onclick="window.submitMembre()">Enregistrer</button>
@@ -1128,15 +1114,51 @@ body {
 </div>
 
 <script>
-// Membres par défaut (modifiables depuis l'interface)
+// ═══ RÔLES ═══
+const ROLES = {
+  'ddp':        { label:'Directeur de Projet (DDP)',       level:5 },
+  'ddpa':       { label:'Directeur Adjoint (DDPA)',         level:4 },
+  'resp-dev':   { label:'Responsable Développement (RD)',   level:3 },
+  'developpeur':{ label:'Développeur (D)',                  level:3 },
+  'builder':    { label:'Builder',                          level:2 },
+  'scripteur':  { label:'Scripteur',                        level:2 },
+  'testeur':    { label:'Testeur',                          level:2 },
+  'voix':       { label:'Voix',                             level:2 },
+};
+
+// ═══ PERMISSIONS ═══
+// level 5 (DDP)   : tout faire + gérer membres + supprimer tout
+// level 4 (DDPA)  : tout faire + supprimer tout, pas gérer membres
+// level 3 (RD/D)  : ajouter/modifier tout sauf annonces, pas supprimer les autres
+// level 2 (autres): lecture seule + ajouter leurs propres notes
+
+function canDo(action) {
+  const u = window._currentUser || {};
+  const level = (ROLES[u.role] || {}).level || 1;
+  switch(action) {
+    case 'manageMembers':   return level >= 5;
+    case 'deleteAny':       return level >= 4;
+    case 'editAnnounce':    return level >= 4;
+    case 'addAnnounce':     return level >= 4;
+    case 'editNote':        return level >= 3;
+    case 'addNote':         return level >= 2;
+    case 'editTask':        return level >= 3;
+    case 'addTask':         return level >= 3;
+    case 'editProgress':    return level >= 4;
+    default: return false;
+  }
+}
+window.canDo = canDo;
+
+// ═══ MEMBRES PAR DÉFAUT ═══
 const DEFAULT_MEMBRES = [
-  {id:'guirrie',name:'Guirrie',pass:'Ven1793!G',role:'directeur',label:'Directeur de Projet (DDP)'},
-  {id:'lomol',  name:'Lomol',  pass:'Ven1793!L',role:'directeur',label:'Directeur de Projet (DDP)'},
-  {id:'xentrax',name:'Xentrax',pass:'Ven1793!X',role:'directeur',label:'Directeur de Projet (DDP)'},
-  {id:'1baba',  name:'1baba',  pass:'Ven1793!B',role:'directeur',label:'Directeur de Projet (DDP)'},
-  {id:'theo',   name:'Théo',   pass:'Ven1793!T',role:'directeur',label:'Directeur de Projet (DDP)'},
-  {id:'anae',   name:'Anaë',   pass:'Ven1793!A',role:'resp-dev', label:'Responsable Développement (RD)'},
-  {id:'elioth', name:'Elioth', pass:'Ven1793!E',role:'staff',    label:'Staff'},
+  {id:'guirrie',name:'Guirrie',pass:'Ven1793!G',role:'ddp',         label:'Directeur de Projet (DDP)'},
+  {id:'lomol',  name:'Lomol',  pass:'Ven1793!L',role:'ddp',         label:'Directeur de Projet (DDP)'},
+  {id:'xentrax',name:'Xentrax',pass:'Ven1793!X',role:'ddp',         label:'Directeur de Projet (DDP)'},
+  {id:'1baba',  name:'1baba',  pass:'Ven1793!B',role:'ddp',         label:'Directeur de Projet (DDP)'},
+  {id:'theo',   name:'Théo',   pass:'Ven1793!T',role:'ddp',         label:'Directeur de Projet (DDP)'},
+  {id:'anae',   name:'Anaë',   pass:'Ven1793!A',role:'resp-dev',    label:'Responsable Développement (RD)'},
+  {id:'elioth', name:'Elioth', pass:'Ven1793!E',role:'ddpa',        label:'Directeur Adjoint (DDPA)'},
 ];
 
 function getMembres() {
@@ -1177,8 +1199,9 @@ window.doLogout = function() {
   window._currentUser = null;
 }
 
-window.getMembres   = getMembres;
-window.saveMembres  = saveMembres;
+window.getMembres  = getMembres;
+window.saveMembres = saveMembres;
+window.ROLES       = ROLES;
 </script>
 
 <script type="module">
@@ -1214,21 +1237,57 @@ let taskFilter = 'all';
 const barFill = { done:'#7EC89A', wip:'var(--gold)', todo:'rgba(255,255,255,0.15)' };
 
 function currentUser() { return window._currentUser || {}; }
+function can(action)   { return window.canDo ? window.canDo(action) : false; }
+
+const roleLabels = window.ROLES
+  ? Object.fromEntries(Object.entries(window.ROLES).map(([k,v])=>[k,v.label]))
+  : {};
 
 window._enterDashboard = function() {
   const u = currentUser();
   document.getElementById('login-page').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
   document.getElementById('user-name').textContent = u.name;
-  document.getElementById('user-role-label').textContent = u.label || u.role;
+  document.getElementById('user-role-label').textContent = u.label || roleLabels[u.role] || u.role;
   document.getElementById('user-avatar').textContent = (u.name||'?')[0].toUpperCase();
   document.getElementById('welcome-msg').textContent = `Bienvenue, ${u.name}.`;
   document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // Afficher/cacher les boutons selon les permissions
+  const btnAddTask     = document.getElementById('btn-add-task');
+  const btnAddAnnounce = document.getElementById('btn-add-announce');
+  const btnAddNote     = document.getElementById('btn-add-note');
+  const navMembres     = document.getElementById('nav-membres');
+  if (btnAddTask)     btnAddTask.style.display     = can('addTask')     ? '' : 'none';
+  if (btnAddAnnounce) btnAddAnnounce.style.display = can('addAnnounce') ? '' : 'none';
+  if (btnAddNote)     btnAddNote.style.display     = can('addNote')     ? '' : 'none';
+  if (navMembres)     navMembres.style.display     = can('manageMembers') ? '' : 'none';
+
   listenTasks();
   loadActes();
   listenAnnounces();
   listenNotes();
   renderMembres();
+
+  // Prévisualisation fichier note
+  document.getElementById('note-file').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const preview = document.getElementById('note-file-preview');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('note-file-data').value = e.target.result;
+      document.getElementById('note-file-name').value = file.name;
+      document.getElementById('note-file-type').value = file.type;
+      preview.style.display = 'block';
+      if (file.type.startsWith('image/')) {
+        preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:120px;border:1px solid var(--border);margin-top:4px">`;
+      } else {
+        preview.innerHTML = `<div style="font-size:12px;color:var(--gold);padding:6px 0">📄 ${file.name}</div>`;
+      }
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 window.showPanel = function(id, el) {
@@ -1272,8 +1331,8 @@ function renderTasks() {
       <div class="task-assignee">${t.assignee}</div>
       <div style="display:flex;align-items:center;gap:8px">
         <div class="task-prio prio-${t.prio}">${t.prio}</div>
-        <span onclick="window.editTask('${t.firestoreId}','${t.name.replace(/'/g,"\\'")}','${t.assignee}','${t.prio}')" style="cursor:pointer;color:var(--gold);font-size:13px;border-bottom:1px solid var(--gold-d)">✎</span>
-        <div onclick="window.deleteTask('${t.firestoreId}')" style="cursor:pointer;color:var(--cream3);font-size:16px;line-height:1;padding:2px 6px;border:1px solid var(--border);transition:color .15s" onmouseover="this.style.color='#E89090'" onmouseout="this.style.color='var(--cream3)'">✕</div>
+        ${can('editTask') ? `<span onclick="window.editTask('${t.firestoreId}','${t.name.replace(/'/g,"\\'")}','${t.assignee}','${t.prio}')" style="cursor:pointer;color:var(--gold);font-size:13px;border-bottom:1px solid var(--gold-d)">✎</span>` : ''}
+        ${can('deleteAny') ? `<div onclick="window.deleteTask('${t.firestoreId}')" style="cursor:pointer;color:var(--cream3);font-size:16px;line-height:1;padding:2px 6px;border:1px solid var(--border)" onmouseover="this.style.color='#E89090'" onmouseout="this.style.color='var(--cream3)'">✕</div>` : ''}
       </div>`;
     list.appendChild(div);
   });
@@ -1432,17 +1491,17 @@ function listenAnnounces() {
     const docs = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.createdAt-a.createdAt).slice(0,5);
     if (docs.length === 0) { list.innerHTML='<div style="color:var(--cream3);font-style:italic;font-size:13px">Aucune annonce.</div>'; return; }
     list.innerHTML = docs.map(a=>`
-      <div class="announce-item" style="position:relative">
+      <div class="announce-item">
         <div class="announce-top">
           <div class="announce-dot" style="background:${catColors[a.cat]||'var(--gold)'}"></div>
           <span class="announce-cat">${a.cat}</span>
           <span class="announce-date">${new Date(a.createdAt).toLocaleDateString('fr-FR')}</span>
         </div>
         <div class="announce-title">${a.title}</div>
-        <div style="display:flex;gap:8px;margin-top:6px">
+        ${can('editAnnounce') ? `<div style="display:flex;gap:8px;margin-top:6px">
           <span onclick="window.editAnnounce('${a.id}','${a.title.replace(/'/g,"\\'")}','${a.cat}')" style="font-size:11px;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-d)">Modifier</span>
-          <span onclick="window.deleteAnnounce('${a.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>
-        </div>
+          ${can('deleteAny') ? `<span onclick="window.deleteAnnounce('${a.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>` : ''}
+        </div>` : ''}
       </div>`).join('');
   });
 }
@@ -1484,11 +1543,16 @@ function listenNotes() {
         <div class="note-tag">${n.cat}</div>
         <div class="note-title">${n.title}</div>
         <div class="note-preview">${(n.content||'').substring(0,120)}${n.content&&n.content.length>120?'...':''}</div>
+        ${n.fileData ? `<div style="margin-top:8px">
+          ${n.fileType&&n.fileType.startsWith('image/')
+            ? `<img src="${n.fileData}" style="max-width:100%;max-height:80px;border:1px solid var(--border)">`
+            : `<a href="${n.fileData}" download="${n.fileName||'fichier'}" style="font-size:11px;color:var(--gold);border-bottom:1px solid var(--gold-d)">📄 ${n.fileName||'Télécharger'}</a>`}
+        </div>` : ''}
         <div class="note-meta"><span>${n.author||''}</span><span>${new Date(n.createdAt).toLocaleDateString('fr-FR')}</span></div>
-        <div style="display:flex;gap:8px;margin-top:8px">
+        ${can('editNote') ? `<div style="display:flex;gap:8px;margin-top:8px">
           <span onclick="window.editNote('${n.id}')" style="font-size:11px;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-d)">Modifier</span>
-          <span onclick="window.deleteNote('${n.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>
-        </div>
+          ${can('deleteAny') ? `<span onclick="window.deleteNote('${n.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>` : ''}
+        </div>` : ''}
       </div>`).join('');
   });
 }
@@ -1523,12 +1587,20 @@ window.submitNote = async function() {
   const color   = document.getElementById('note-color').value;
   const content = document.getElementById('note-content').value.trim();
   const author  = document.getElementById('note-author').value.trim();
+  const fileData = document.getElementById('note-file-data').value;
+  const fileName = document.getElementById('note-file-name').value;
+  const fileType = document.getElementById('note-file-type').value;
   if (!title) return;
-  const data = {title,cat,color,content,author,createdAt:id?undefined:Date.now()};
-  if (!data.createdAt) delete data.createdAt;
-  if (id) await updateDoc(doc(db,'notes',id),{title,cat,color,content,author});
-  else await addDoc(collection(db,'notes'),{title,cat,color,content,author,createdAt:Date.now()});
+  const data = {title,cat,color,content,author};
+  if (fileData) { data.fileData=fileData; data.fileName=fileName; data.fileType=fileType; }
+  if (id) await updateDoc(doc(db,'notes',id),data);
+  else await addDoc(collection(db,'notes'),{...data,createdAt:Date.now()});
   document.getElementById('note-modal').classList.remove('open');
+  document.getElementById('note-file-data').value='';
+  document.getElementById('note-file-name').value='';
+  document.getElementById('note-file-type').value='';
+  document.getElementById('note-file-preview').style.display='none';
+  document.getElementById('note-file').value='';
 }
 
 window.deleteNote = async function(id) {
@@ -1536,7 +1608,9 @@ window.deleteNote = async function(id) {
 }
 
 // ═══ MEMBRES (localStorage) ═══
-const roleLabels = { directeur:'Directeur de Projet (DDP)', 'resp-dev':'Responsable Développement (RD)', staff:'Staff' };
+function getRoleLabel(role) {
+  return (window.ROLES && window.ROLES[role]) ? window.ROLES[role].label : role;
+}
 
 function renderMembres() {
   const list = document.getElementById('membres-list');
@@ -1550,12 +1624,12 @@ function renderMembres() {
         <div style="font-size:14px;font-weight:500;color:var(--cream)">${m.name}</div>
         <div style="font-size:12px;color:var(--cream3);font-style:italic">${m.id}</div>
       </div>
-      <div style="font-size:13px;color:var(--gold);font-style:italic">${m.label||roleLabels[m.role]||m.role}</div>
+      <div style="font-size:13px;color:var(--gold);font-style:italic">${getRoleLabel(m.role)}</div>
       <div style="font-size:12px;color:var(--cream3);font-family:'JetBrains Mono',monospace">${m.pass}</div>
-      <div style="display:flex;gap:8px">
+      ${can('manageMembers') ? `<div style="display:flex;gap:8px">
         <span onclick="window.editMembre('${m.id}')" style="font-size:11px;color:var(--gold);cursor:pointer;border-bottom:1px solid var(--gold-d)">Modifier</span>
         <span onclick="window.deleteMembre('${m.id}')" style="font-size:11px;color:#E89090;cursor:pointer;border-bottom:1px solid rgba(232,144,144,0.4)">Supprimer</span>
-      </div>
+      </div>` : '<div></div>'}
     </div>`).join('');
   populateAssigneeSelect(membres);
 }
@@ -1563,7 +1637,7 @@ function renderMembres() {
 function populateAssigneeSelect(membres) {
   const sel = document.getElementById('new-task-assignee');
   if (!sel) return;
-  sel.innerHTML = membres.map(m=>`<option value="${m.name}">${m.name} (${m.label||roleLabels[m.role]||m.role})</option>`).join('');
+  sel.innerHTML = membres.map(m=>`<option value="${m.name}">${m.name} (${getRoleLabel(m.role)})</option>`).join('');
 }
 
 window.openMembreModal = function() {
@@ -1571,7 +1645,7 @@ window.openMembreModal = function() {
   document.getElementById('mb-id').value='';
   document.getElementById('mb-name').value='';
   document.getElementById('mb-pass').value='';
-  document.getElementById('mb-role').value='directeur';
+  document.getElementById('mb-role').value='ddp';
   document.getElementById('mb-id').disabled=false;
   document.getElementById('membre-modal-title').textContent='Nouveau membre';
   document.getElementById('membre-modal').classList.add('open');
@@ -1585,7 +1659,7 @@ window.editMembre = function(id) {
   document.getElementById('mb-id').disabled=true;
   document.getElementById('mb-name').value=m.name||'';
   document.getElementById('mb-pass').value=m.pass||'';
-  document.getElementById('mb-role').value=m.role||'staff';
+  document.getElementById('mb-role').value=m.role||'builder';
   document.getElementById('membre-modal-title').textContent='Modifier le membre';
   document.getElementById('membre-modal').classList.add('open');
 }
@@ -1598,7 +1672,7 @@ window.submitMembre = function() {
   const role   = document.getElementById('mb-role').value;
   if (!id||!name||!pass) return;
   let membres = window.getMembres();
-  const label = roleLabels[role]||role;
+  const label = getRoleLabel(role);
   if (editId) membres = membres.map(m=>m.id===editId?{...m,name,pass,role,label}:m);
   else membres.push({id,name,pass,role,label});
   window.saveMembres(membres);
