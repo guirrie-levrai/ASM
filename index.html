@@ -1159,7 +1159,6 @@ const DEFAULT_MEMBRES = [
   {id:'theo',   name:'Théo',   pass:'Ven1793!T',role:'ddp',         label:'Directeur de Projet (DDP)'},
   {id:'anae',   name:'Anaë',   pass:'Ven1793!A',role:'resp-dev',    label:'Responsable Développement (RD)'},
   {id:'elioth', name:'Elioth', pass:'Ven1793!E',role:'ddpa',        label:'Directeur Adjoint (DDPA)'},
-  {id:'mael', name:'Mael', pass:'VUR!M',role:'voix',                label:'voix'},
 ];
 
 function getMembres() {
@@ -1188,7 +1187,19 @@ window.doLogin = function() {
     err.style.display='block'; err.textContent='Identifiant ou mot de passe incorrect.'; return;
   }
   window._currentUser = m;
-  if (window._enterDashboard) window._enterDashboard();
+  // Attendre que le module Firebase soit prêt (max 5s)
+  let tries = 0;
+  const wait = setInterval(() => {
+    tries++;
+    if (window._enterDashboard) {
+      clearInterval(wait);
+      window._enterDashboard();
+    } else if (tries > 50) {
+      clearInterval(wait);
+      err.style.display='block';
+      err.textContent='Erreur de chargement. Rafraîchis la page et réessaie.';
+    }
+  }, 100);
 }
 
 window.doLogout = function() {
@@ -1688,30 +1699,6 @@ window.deleteMembre = function(id) {
   renderMembres();
 }
 
-// ═══ LOGIN DEPUIS FIREBASE ═══
-window._doLoginFn = async function() {
-  const role = document.getElementById('login-role').value;
-  const user = document.getElementById('login-user').value.trim().toLowerCase();
-  const pass = document.getElementById('login-pass').value;
-  const err  = document.getElementById('login-error');
-  if (!role||!user||!pass) { err.style.display='block';err.textContent='Veuillez remplir tous les champs.';return; }
-  const snap = await getDoc(doc(db,'membres',user));
-  if (!snap.exists()) { err.style.display='block';err.textContent='Identifiant introuvable.';return; }
-  const m = snap.data();
-  if (m.pass!==pass||m.role!==role) { err.style.display='block';err.textContent='Identifiant ou mot de passe incorrect.';return; }
-  err.style.display='none';
-  currentUser={...m};
-  enterDashboard();
-}
-
-window._doLogoutFn = function() {
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('login-page').style.display = 'flex';
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('login-role').value = '';
-  currentUser = null;
-}
 </script>
 </body>
 </html>
