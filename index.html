@@ -2,16 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ASM — Tableau de bord Équipe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASM — Espace Équipe</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     :root {
       --gold: #C9A84C;
       --gold-l: #E2C97A;
@@ -19,30 +13,19 @@
       --ink: #0E0B06;
       --ink2: #181208;
       --ink3: #221A0C;
-      --ink4: #2E2212;
       --cream: #F0E4C8;
       --cream2: #D8C9A8;
       --cream3: #9A8A6A;
       --red: #7A1A1A;
-      --red2: #A02828;
-      --green: #1A4A2A;
-      --green2: #2A6A3A;
-      --blue: #1A2A4A;
-      --blue2: #2A4A7A;
-      --border: rgba(201, 168, 76, 0.18);
-      --border2: rgba(201, 168, 76, 0.35);
+      --border: rgba(201,168,76,0.18);
     }
-
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: 'Crimson Pro', serif;
       background: var(--ink);
       color: var(--cream);
-      font-size: 16px;
-      line-height: 1.5;
       min-height: 100vh;
     }
-
-    /* LOGIN */
     #login-page {
       min-height: 100vh;
       display: flex;
@@ -50,73 +33,14 @@
       justify-content: center;
       position: relative;
     }
-
-    #login-page::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 30% 50%, rgba(122, 26, 26, 0.12) 0%, transparent 60%),
-                  radial-gradient(ellipse 50% 80% at 80% 50%, rgba(201, 168, 76, 0.06) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .login-bg-text {
-      position: absolute;
-      font-family: 'Playfair Display', serif;
-      font-size: 280px;
-      font-style: italic;
-      font-weight: 700;
-      color: rgba(201, 168, 76, 0.03);
-      user-select: none;
-      white-space: nowrap;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
     .login-box {
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
       padding: 0 20px;
-      animation: fadeUp 0.5s ease;
     }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 36px;
-    }
-
-    .login-crest {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .crest-line {
-      width: 50px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold-d));
-    }
-    .crest-line.right {
-      background: linear-gradient(270deg, transparent, var(--gold-d));
-    }
-    .crest-gem {
-      width: 10px;
-      height: 10px;
-      background: var(--gold);
-      transform: rotate(45deg);
-    }
-
+    .login-header { text-align: center; margin-bottom: 36px; }
     .login-title {
       font-family: 'Playfair Display', serif;
       font-size: 32px;
@@ -127,26 +51,13 @@
       font-size: 13px;
       font-style: italic;
       color: var(--cream3);
-      letter-spacing: 0.2em;
     }
-
     .login-card {
       background: var(--ink2);
       border: 1px solid var(--border);
       padding: 36px 32px;
-      position: relative;
     }
-    .login-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-
-    .field {
-      margin-bottom: 20px;
-    }
+    .field { margin-bottom: 20px; }
     .field label {
       display: block;
       font-size: 10px;
@@ -155,35 +66,27 @@
       color: var(--cream3);
       margin-bottom: 8px;
     }
-    .field select, .field input, .field textarea {
+    .field select, .field input {
       width: 100%;
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(255,255,255,0.04);
       border: 1px solid var(--border);
       color: var(--cream);
       font-family: 'Crimson Pro', serif;
       font-size: 15px;
       padding: 10px 14px;
       outline: none;
-      transition: 0.2s;
     }
-    .field select:focus, .field input:focus, .field textarea:focus {
-      border-color: var(--gold);
-    }
-    .field select option {
-      background: var(--ink2);
-    }
-
+    .field select:focus, .field input:focus { border-color: var(--gold); }
     .login-error {
-      background: rgba(122, 26, 26, 0.3);
-      border: 1px solid var(--red2);
+      background: rgba(122,26,26,0.3);
+      border: 1px solid var(--red);
       color: #E89090;
       font-size: 13px;
       padding: 8px 12px;
       margin-bottom: 20px;
       display: none;
     }
-
-    .btn-login, .btn-submit {
+    .btn-login {
       width: 100%;
       background: var(--gold);
       color: var(--ink);
@@ -195,24 +98,11 @@
       padding: 12px;
       border: none;
       cursor: pointer;
-      transition: 0.2s;
     }
-    .btn-login:hover, .btn-submit:hover {
-      background: var(--gold-l);
-    }
-    .login-note {
-      font-size: 12px;
-      font-style: italic;
-      color: var(--cream3);
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    /* DASHBOARD */
-    #dashboard {
-      display: none;
-      min-height: 100vh;
-    }
+    .btn-login:hover { background: var(--gold-l); }
+    
+    /* Dashboard */
+    #dashboard { display: none; min-height: 100vh; }
     .sidebar {
       position: fixed;
       top: 0; left: 0; bottom: 0;
@@ -221,24 +111,13 @@
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      z-index: 50;
     }
-    .sidebar-brand {
-      padding: 28px 20px 20px;
-      border-bottom: 1px solid var(--border);
-    }
+    .sidebar-brand { padding: 28px 20px 20px; border-bottom: 1px solid var(--border); }
     .sidebar-logo {
       font-family: 'Playfair Display', serif;
       font-size: 16px;
       font-weight: 700;
       color: var(--gold);
-      line-height: 1.3;
-    }
-    .sidebar-tagline {
-      font-size: 10px;
-      font-style: italic;
-      color: var(--cream3);
-      margin-top: 5px;
     }
     .sidebar-user {
       padding: 16px 20px;
@@ -254,32 +133,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Playfair Display', serif;
       font-size: 18px;
-      color: var(--gold-l);
     }
-    .user-name {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--cream);
-    }
-    .user-role {
-      font-size: 11px;
-      color: var(--gold);
-      font-style: italic;
-    }
-    .sidebar-nav {
-      flex: 1;
-      padding: 20px 0;
-      overflow-y: auto;
-    }
-    .nav-section {
-      font-size: 9px;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--gold-d);
-      padding: 12px 20px 6px;
-    }
+    .user-name { font-size: 15px; font-weight: 500; }
+    .user-role { font-size: 11px; color: var(--gold); font-style: italic; }
+    .sidebar-nav { flex: 1; padding: 20px 0; }
     .nav-item {
       display: flex;
       align-items: center;
@@ -287,44 +145,24 @@
       padding: 10px 20px;
       cursor: pointer;
       color: var(--cream2);
-      font-size: 14px;
       border-left: 2px solid transparent;
-      transition: 0.2s;
     }
-    .nav-item:hover {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--cream);
-    }
+    .nav-item:hover { background: rgba(255,255,255,0.04); }
     .nav-item.active {
-      background: rgba(201, 168, 76, 0.1);
+      background: rgba(201,168,76,0.1);
       color: var(--gold);
       border-left-color: var(--gold);
     }
-    .sidebar-footer {
-      padding: 20px;
-      border-top: 1px solid var(--border);
-    }
+    .sidebar-footer { padding: 20px; border-top: 1px solid var(--border); }
     .btn-logout {
       width: 100%;
       background: transparent;
       border: 1px solid var(--border);
       color: var(--cream3);
-      font-family: 'Crimson Pro', serif;
-      font-size: 13px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       padding: 8px;
       cursor: pointer;
-      transition: 0.2s;
     }
-    .btn-logout:hover {
-      border-color: var(--red2);
-      color: #E89090;
-    }
-    .main {
-      margin-left: 250px;
-      min-height: 100vh;
-    }
+    .main { margin-left: 250px; }
     .topbar {
       height: 64px;
       border-bottom: 1px solid var(--border);
@@ -332,102 +170,30 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 36px;
-      background: rgba(14, 11, 6, 0.85);
+      background: rgba(14,11,6,0.85);
       backdrop-filter: blur(8px);
-      position: sticky;
-      top: 0;
-      z-index: 40;
     }
-    .topbar-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 500;
-    }
-    .topbar-date {
-      font-size: 13px;
-      font-style: italic;
-      color: var(--cream3);
-    }
-    .content {
-      padding: 32px 36px;
-    }
-    .panel {
-      display: none;
-      animation: fadeSlide 0.25s ease;
-    }
-    .panel.active {
-      display: block;
-    }
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateX(8px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    /* cartes */
+    .content { padding: 32px 36px; }
+    .panel { display: none; }
+    .panel.active { display: block; }
     .welcome-banner {
       background: var(--ink3);
       border: 1px solid var(--border);
       padding: 24px 32px;
       margin-bottom: 28px;
-      position: relative;
-      overflow: hidden;
     }
-    .welcome-banner::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-    .welcome-text {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-    }
-    .welcome-sub {
-      font-size: 14px;
-      font-style: italic;
-      color: var(--cream3);
-    }
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      margin-bottom: 32px;
-    }
-    .stat-card {
-      background: var(--ink3);
-      border: 1px solid var(--border);
-      padding: 18px 20px;
-    }
-    .stat-val {
-      font-family: 'Playfair Display', serif;
-      font-size: 38px;
-      font-style: italic;
-      color: var(--gold);
-      line-height: 1;
-    }
-    .stat-lbl {
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--cream3);
-    }
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
+    .welcome-text { font-family: 'Playfair Display', serif; font-size: 24px; }
     .card {
       background: var(--ink3);
       border: 1px solid var(--border);
       padding: 22px;
+      margin-bottom: 20px;
     }
     .card-title {
       font-family: 'Playfair Display', serif;
       font-size: 17px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
       margin-bottom: 18px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
@@ -436,63 +202,10 @@
       background: var(--gold);
       color: var(--ink);
       border: none;
-      font-family: 'Crimson Pro', serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
       padding: 5px 12px;
       cursor: pointer;
-      transition: 0.2s;
     }
-    .btn-add:hover {
-      background: var(--gold-l);
-    }
-    .announce-item {
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-    }
-    .announce-item:last-child {
-      border-bottom: none;
-    }
-    .announce-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-    }
-    .announce-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-    }
-    .announce-title {
-      font-weight: 500;
-      margin-top: 5px;
-    }
-    .task-filters {
-      display: flex;
-      gap: 10px;
-      margin: 20px 0;
-      flex-wrap: wrap;
-    }
-    .task-filter {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--cream3);
-      font-size: 12px;
-      padding: 5px 14px;
-      cursor: pointer;
-    }
-    .task-filter.active, .task-filter:hover {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: var(--ink);
-    }
-    .tasks-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .tasks-list { display: flex; flex-direction: column; gap: 10px; }
     .task-item {
       background: var(--ink3);
       border: 1px solid var(--border);
@@ -504,213 +217,512 @@
     }
     .task-check {
       width: 20px; height: 20px;
-      border: 1px solid var(--border2);
+      border: 1px solid var(--border);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .task-check.done {
-      background: var(--gold);
-      border-color: var(--gold);
-    }
-    .task-check.done::after {
-      content: '✓';
-      font-size: 12px;
-      color: var(--ink);
-    }
-    .task-name {
-      font-size: 15px;
-    }
-    .task-item.completed .task-name {
-      text-decoration: line-through;
-      color: var(--cream3);
-    }
+    .task-check.done { background: var(--gold); }
+    .task-check.done::after { content: '✓'; color: var(--ink); }
     .task-prio {
       font-size: 10px;
       padding: 3px 8px;
-      text-transform: uppercase;
     }
-    .prio-haute { background: rgba(122,26,26,0.4); color:#E89090; border:1px solid #A02828; }
-    .prio-moyenne { background: rgba(201,168,76,0.2); color: var(--gold); border:1px solid var(--gold-d); }
-    .prio-basse { background: rgba(26,74,42,0.4); color:#7EC89A; border:1px solid #2A6A3A; }
-    .acte-item {
-      background: var(--ink3);
-      border: 1px solid var(--border);
-      padding: 18px;
-      margin-bottom: 12px;
-    }
-    .acte-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-    .acte-bar-bg {
-      height: 4px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 2px;
-      overflow: hidden;
-      flex: 1;
-    }
-    .acte-bar {
-      height: 100%;
-      transition: width 0.2s;
-    }
-    .notes-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    .note-card {
-      background: var(--ink3);
-      border: 1px solid var(--border);
-      padding: 18px;
-      position: relative;
-    }
-    .note-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 3px;
-    }
-    .note-card.gold::before { background: var(--gold-d); }
-    .note-card.red::before { background: var(--red); }
-    .note-card.green::before { background: var(--green2); }
-    .note-card.blue::before { background: var(--blue2); }
+    .prio-haute { background: rgba(122,26,26,0.4); color: #E89090; }
+    .prio-moyenne { background: rgba(201,168,76,0.2); color: var(--gold); }
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(6px);
       z-index: 200;
       align-items: center;
       justify-content: center;
     }
-    .modal-overlay.open {
-      display: flex;
-    }
+    .modal-overlay.open { display: flex; }
     .modal-box {
       background: var(--ink2);
-      border: 1px solid var(--border2);
+      border: 1px solid var(--border);
       padding: 32px;
       width: 100%;
-      max-width: 520px;
-      position: relative;
+      max-width: 500px;
     }
     .modal-close-btn {
-      position: absolute;
-      top: 12px; right: 16px;
+      float: right;
       background: none;
       border: none;
       color: var(--cream3);
       font-size: 24px;
       cursor: pointer;
     }
-    .modal-close-btn:hover {
-      color: var(--gold);
-    }
-    @media (max-width: 800px) {
-      .sidebar { width: 220px; }
-      .main { margin-left: 220px; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
-      .two-col, .notes-grid { grid-template-columns: 1fr; }
-      .content { padding: 20px; }
-    }
-    @media (max-width: 650px) {
-      .sidebar { transform: translateX(-100%); position: fixed; transition: 0.2s; }
-      .main { margin-left: 0; }
-      .mobile-menu-btn { display: block; }
-    }
   </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login-page">
-  <div class="login-bg-text">ASM</div>
   <div class="login-box">
     <div class="login-header">
-      <div class="login-crest"><div class="crest-line"></div><div class="crest-gem"></div><div class="crest-line right"></div></div>
       <h1 class="login-title">Athanase Stories Makers</h1>
       <p class="login-sub">Espace Équipe — Accès Restreint</p>
     </div>
     <div class="login-card">
       <div class="login-error" id="login-error"></div>
-      <div class="field"><label>Rôle</label><select id="login-role"><option value="">Sélectionner...</option><option value="ddp">Directeur de Projet (DDP)</option><option value="ddpa">Directeur Adjoint (DDPA)</option><option value="resp-dev">Responsable Développement (RD)</option><option value="developpeur">Développeur</option><option value="builder">Builder</option><option value="scripteur">Scripteur</option><option value="testeur">Testeur</option><option value="voix">Voix</option></select></div>
-      <div class="field"><label>Identifiant</label><input type="text" id="login-user" placeholder="identifiant"></div>
-      <div class="field"><label>Mot de passe</label><input type="password" id="login-pass" placeholder="mot de passe"></div>
-      <button class="btn-login" id="loginBtn">Accéder au tableau de bord</button>
-      <p class="login-note">Contactez la direction pour obtenir vos accès.</p>
+      <div class="field">
+        <label>Rôle</label>
+        <select id="login-role">
+          <option value="">Sélectionner...</option>
+          <option value="ddp">Directeur de Projet (DDP)</option>
+          <option value="ddpa">Directeur Adjoint (DDPA)</option>
+          <option value="resp-dev">Responsable Développement (RD)</option>
+          <option value="developpeur">Développeur</option>
+          <option value="builder">Builder</option>
+          <option value="scripteur">Scripteur</option>
+          <option value="testeur">Testeur</option>
+          <option value="voix">Voix</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Identifiant</label>
+        <input type="text" id="login-user" placeholder="identifiant">
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="login-pass" placeholder="mot de passe">
+      </div>
+      <button class="btn-login" id="loginBtn">Accéder</button>
+      <p class="login-sub" style="margin-top:20px;text-align:center">Contactez la direction</p>
     </div>
   </div>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dashboard">
   <div class="sidebar">
-    <div class="sidebar-brand"><div class="sidebar-logo">Athanase Stories<br>Makers</div><div class="sidebar-tagline">Studio Interne — 2026</div></div>
-    <div class="sidebar-user"><div class="user-avatar" id="user-avatar">A</div><div><div class="user-name" id="user-name">Nom</div><div class="user-role" id="user-role-label">Rôle</div></div></div>
+    <div class="sidebar-brand"><div class="sidebar-logo">Athanase Stories Makers</div></div>
+    <div class="sidebar-user"><div class="user-avatar" id="user-avatar">?</div><div><div class="user-name" id="user-name"></div><div class="user-role" id="user-role-label"></div></div></div>
     <nav class="sidebar-nav">
-      <div class="nav-section">Navigation</div>
-      <div class="nav-item active" data-panel="home"><span class="nav-icon">◈</span> Tableau de bord</div>
-      <div class="nav-item" data-panel="tasks"><span class="nav-icon">◻</span> Tâches</div>
-      <div class="nav-item" data-panel="progress"><span class="nav-icon">◎</span> Avancement</div>
-      <div class="nav-item" data-panel="notes"><span class="nav-icon">◇</span> Notes & Docs</div>
-      <div class="nav-item" id="nav-membres" data-panel="membres"><span class="nav-icon">◉</span> Membres</div>
+      <div class="nav-item active" data-panel="home">◈ Tableau de bord</div>
+      <div class="nav-item" data-panel="tasks">◻ Tâches</div>
+      <div class="nav-item" data-panel="membres">◉ Membres</div>
     </nav>
     <div class="sidebar-footer"><button class="btn-logout" id="logoutBtn">Déconnexion</button></div>
   </div>
   <div class="main">
-    <div class="topbar"><div class="topbar-title" id="topbar-title">Tableau de bord</div><div class="topbar-date" id="topbar-date"></div></div>
+    <div class="topbar"><div class="topbar-title" id="topbar-title">Tableau de bord</div><div id="topbar-date"></div></div>
     <div class="content">
-      <div class="panel active" id="panel-home"><div class="welcome-banner"><div class="welcome-text" id="welcome-msg">Bienvenue.</div><div class="welcome-sub">Vendée Uprising — 1793 · Développement en cours</div></div><div class="stats-row"><div class="stat-card"><div class="stat-val">10</div><div class="stat-lbl">Actes narratifs</div></div><div class="stat-card"><div class="stat-val">32</div><div class="stat-lbl">Scènes écrites</div></div><div class="stat-card"><div class="stat-val">6</div><div class="stat-lbl">Fins possibles</div></div><div class="stat-card"><div class="stat-val" id="tasks-done-count">0</div><div class="stat-lbl">Tâches complétées</div></div></div><div class="two-col"><div class="card"><div class="card-title">Annonces internes <button id="btn-add-announce" class="btn-add">+ Annonce</button></div><div id="announces-list">Chargement...</div></div><div class="card"><div class="card-title">Avancement global</div><div id="mini-progress"></div></div></div></div>
-      <div class="panel" id="panel-tasks"><div class="section-head" style="display:flex;justify-content:space-between;"><h2>Tâches de l'équipe</h2><button id="btn-add-task" class="btn-add">+ Nouvelle tâche</button></div><div class="task-filters"><button class="task-filter active" data-filter="all">Toutes</button><button class="task-filter" data-filter="todo">À faire</button><button class="task-filter" data-filter="done">Terminées</button><button class="task-filter" data-filter="haute">Priorité haute</button></div><div class="tasks-list" id="tasks-list"></div></div>
-      <div class="panel" id="panel-progress"><div class="section-head"><h2>Avancement — Vendée Uprising</h2></div><div class="actes-list" id="actes-list"></div></div>
-      <div class="panel" id="panel-notes"><div class="section-head" style="display:flex;justify-content:space-between;"><h2>Notes & Documents</h2><button id="btn-add-note" class="btn-add">+ Nouvelle note</button></div><div class="notes-grid" id="notes-grid">Chargement...</div></div>
-      <div class="panel" id="panel-membres"><div class="section-head" style="display:flex;justify-content:space-between;"><h2>Membres de l'équipe</h2><button id="btn-add-membre" class="btn-add">+ Membre</button></div><div id="membres-list"></div></div>
+      <div class="panel active" id="panel-home">
+        <div class="welcome-banner"><div class="welcome-text" id="welcome-msg"></div></div>
+        <div class="card"><div class="card-title">Tâches récentes <button class="btn-add" id="btn-add-task">+</button></div><div id="tasks-list">Chargement...</div></div>
+        <div class="card"><div class="card-title">Membres</div><div id="membres-list"></div></div>
+      </div>
+      <div class="panel" id="panel-tasks">
+        <div class="card"><div class="card-title">Toutes les tâches</div><div id="all-tasks-list"></div></div>
+      </div>
+      <div class="panel" id="panel-membres">
+        <div class="card"><div class="card-title">Gestion des membres <button class="btn-add" id="btn-add-membre">+</button></div><div id="membres-full-list"></div></div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- MODALS -->
-<div class="modal-overlay" id="taskModal"><div class="modal-box"><button class="modal-close-btn" data-close="taskModal">✕</button><div class="modal-title" id="taskModalTitle">Nouvelle tâche</div><input type="hidden" id="taskEditId"><div class="field"><label>Intitulé</label><input type="text" id="taskName" placeholder="Description"></div><div class="field"><label>Assigné à</label><select id="taskAssignee"></select></div><div class="field"><label>Priorité</label><select id="taskPrio"><option value="haute">Haute</option><option value="moyenne" selected>Moyenne</option><option value="basse">Basse</option></select></div><button class="btn-submit" id="saveTaskBtn">Enregistrer</button></div></div>
-<div class="modal-overlay" id="announceModal"><div class="modal-box"><button class="modal-close-btn" data-close="announceModal">✕</button><div class="modal-title">Annonce</div><input type="hidden" id="announceEditId"><div class="field"><label>Titre</label><input type="text" id="announceTitle"></div><div class="field"><label>Catégorie</label><select id="announceCat"><option>Direction</option><option>Développement</option><option>Recrutement</option><option>Lore</option><option>Build</option></select></div><button class="btn-submit" id="saveAnnounceBtn">Publier</button></div></div>
-<div class="modal-overlay" id="noteModal"><div class="modal-box"><button class="modal-close-btn" data-close="noteModal">✕</button><div class="modal-title">Note</div><input type="hidden" id="noteEditId"><div class="field"><label>Titre</label><input type="text" id="noteTitle"></div><div class="field"><label>Catégorie</label><select id="noteCat"><option>Game Design</option><option>Histoire</option><option>Développement</option><option>UI/UX</option></select></div><div class="field"><label>Couleur</label><select id="noteColor"><option value="gold">Or</option><option value="red">Rouge</option><option value="green">Vert</option><option value="blue">Bleu</option></select></div><div class="field"><label>Contenu</label><textarea id="noteContent" rows="4"></textarea></div><div class="field"><label>Auteur</label><input type="text" id="noteAuthor"></div><button class="btn-submit" id="saveNoteBtn">Enregistrer</button></div></div>
-<div class="modal-overlay" id="membreModal"><div class="modal-box"><button class="modal-close-btn" data-close="membreModal">✕</button><div class="modal-title">Membre</div><input type="hidden" id="membreEditId"><div class="field"><label>Identifiant</label><input type="text" id="membreId"></div><div class="field"><label>Nom affiché</label><input type="text" id="membreName"></div><div class="field"><label>Mot de passe</label><input type="text" id="membrePass"></div><div class="field"><label>Rôle</label><select id="membreRole"><option value="ddp">DDP</option><option value="ddpa">DDPA</option><option value="resp-dev">RD</option><option value="developpeur">Développeur</option><option value="builder">Builder</option><option value="scripteur">Scripteur</option><option value="testeur">Testeur</option><option value="voix">Voix</option></select></div><button class="btn-submit" id="saveMembreBtn">Enregistrer</button></div></div>
+<div class="modal-overlay" id="taskModal"><div class="modal-box"><button class="modal-close-btn" data-close="taskModal">✕</button><h3 id="taskModalTitle">Nouvelle tâche</h3><input type="hidden" id="taskEditId"><div class="field"><label>Titre</label><input type="text" id="taskName" style="width:100%"></div><div class="field"><label>Assigné à</label><select id="taskAssignee" style="width:100%"></select></div><div class="field"><label>Priorité</label><select id="taskPrio" style="width:100%"><option value="haute">Haute</option><option value="moyenne">Moyenne</option><option value="basse">Basse</option></select></div><button class="btn-login" id="saveTaskBtn">Enregistrer</button></div></div>
+<div class="modal-overlay" id="membreModal"><div class="modal-box"><button class="modal-close-btn" data-close="membreModal">✕</button><h3>Membre</h3><input type="hidden" id="membreEditId"><div class="field"><label>Identifiant</label><input type="text" id="membreId" style="width:100%"></div><div class="field"><label>Nom</label><input type="text" id="membreName" style="width:100%"></div><div class="field"><label>Mot de passe</label><input type="text" id="membrePass" style="width:100%"></div><div class="field"><label>Rôle</label><select id="membreRole" style="width:100%"><option value="ddp">DDP</option><option value="ddpa">DDPA</option><option value="resp-dev">RD</option><option value="developpeur">Développeur</option><option value="builder">Builder</option></select></div><button class="btn-login" id="saveMembreBtn">Enregistrer</button></div></div>
 
-<script type="importmap">
-  {
-    "imports": {
-      "firebase/app": "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js",
-      "firebase/firestore": "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"
+<script>
+// ===== DONNÉES MEMBRES (LOCAL STORAGE) =====
+const DEFAULT_MEMBRES = [
+  { id: 'guirrie', name: 'Guirrie', pass: 'Ven1793!G', role: 'ddp' },
+  { id: 'lomol', name: 'Lomol', pass: 'Ven1793!L', role: 'ddp' },
+  { id: 'xentrax', name: 'Xentrax', pass: 'Ven1793!X', role: 'ddp' },
+  { id: '1baba', name: '1baba', pass: 'Ven1793!B', role: 'ddp' },
+  { id: 'theo', name: 'Théo', pass: 'Ven1793!T', role: 'ddp' },
+  { id: 'anae', name: 'Anaë', pass: 'Ven1793!A', role: 'resp-dev' },
+  { id: 'elioth', name: 'Elioth', pass: 'Ven1793!E', role: 'ddpa' },
+  { id: 'mael', name: 'Mael', pass: 'Ven1793!M', role: 'voix' }
+];
+
+function getMembres() {
+  try {
+    const saved = localStorage.getItem('asm_membres');
+    return saved ? JSON.parse(saved) : DEFAULT_MEMBRES;
+  } catch(e) { return DEFAULT_MEMBRES; }
+}
+
+function saveMembres(list) {
+  localStorage.setItem('asm_membres', JSON.stringify(list));
+}
+
+const roleLabels = {
+  ddp: 'Directeur de Projet',
+  ddpa: 'Directeur Adjoint',
+  'resp-dev': 'Responsable Développement',
+  developpeur: 'Développeur',
+  builder: 'Builder',
+  scripteur: 'Scripteur',
+  testeur: 'Testeur',
+  voix: 'Voix'
+};
+
+let currentUser = null;
+let tasks = [];
+
+// Charger les tâches depuis localStorage
+function loadTasks() {
+  const saved = localStorage.getItem('asm_tasks');
+  tasks = saved ? JSON.parse(saved) : [];
+  renderAllTasks();
+}
+
+function saveTasks() {
+  localStorage.setItem('asm_tasks', JSON.stringify(tasks));
+}
+
+function renderAllTasks() {
+  const container = document.getElementById('tasks-list');
+  const allContainer = document.getElementById('all-tasks-list');
+  if (!container) return;
+  
+  const recentTasks = [...tasks].reverse().slice(0, 5);
+  const renderList = (target, taskList) => {
+    if (!target) return;
+    if (taskList.length === 0) {
+      target.innerHTML = '<div style="color:var(--cream3);">Aucune tâche</div>';
+      return;
     }
+    target.innerHTML = taskList.map(t => `
+      <div class="task-item ${t.done ? 'completed' : ''}">
+        <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask('${t.id}')"></div>
+        <div class="task-name">${escapeHtml(t.name)}</div>
+        <div class="task-assignee">${escapeHtml(t.assignee)}</div>
+        <div class="task-prio prio-${t.prio}">${t.prio}</div>
+      </div>
+    `).join('');
+  };
+  
+  renderList(container, recentTasks);
+  if (allContainer) renderList(allContainer, [...tasks].reverse());
+  updateTaskCount();
+}
+
+function updateTaskCount() {
+  const doneCount = tasks.filter(t => t.done).length;
+  const doneElem = document.getElementById('tasks-done-count');
+  if (doneElem) doneElem.textContent = doneCount;
+}
+
+window.toggleTask = function(id) {
+  const task = tasks.find(t => t.id === id);
+  if (task) {
+    task.done = !task.done;
+    saveTasks();
+    renderAllTasks();
   }
+};
+
+function addTask(name, assignee, prio) {
+  const newTask = {
+    id: Date.now().toString(),
+    name: name,
+    assignee: assignee,
+    prio: prio,
+    done: false,
+    createdAt: Date.now()
+  };
+  tasks.push(newTask);
+  saveTasks();
+  renderAllTasks();
+}
+
+function updateTask(id, name, assignee, prio) {
+  const task = tasks.find(t => t.id === id);
+  if (task) {
+    task.name = name;
+    task.assignee = assignee;
+    task.prio = prio;
+    saveTasks();
+    renderAllTasks();
+  }
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks();
+  renderAllTasks();
+}
+
+// Rendu des membres
+function renderMembres() {
+  const membres = getMembres();
+  const container = document.getElementById('membres-list');
+  const fullContainer = document.getElementById('membres-full-list');
+  
+  const renderList = (target, list, isFull = false) => {
+    if (!target) return;
+    target.innerHTML = list.map(m => `
+      <div class="task-item" style="grid-template-columns: 1fr auto;">
+        <div><strong>${escapeHtml(m.name)}</strong> (${roleLabels[m.role] || m.role})</div>
+        ${isFull && currentUser && currentUser.role === 'ddp' ? `
+          <div>
+            <button onclick="editMembre('${m.id}')" style="background:var(--gold);color:var(--ink);border:none;padding:4px 8px;margin-right:5px;cursor:pointer;">✎</button>
+            <button onclick="deleteMembre('${m.id}')" style="background:var(--red);color:white;border:none;padding:4px 8px;cursor:pointer;">✕</button>
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+  };
+  
+  renderList(container, membres, false);
+  if (fullContainer) renderList(fullContainer, membres, true);
+}
+
+function populateAssigneeSelect() {
+  const membres = getMembres();
+  const select = document.getElementById('taskAssignee');
+  if (select) {
+    select.innerHTML = membres.map(m => `<option value="${escapeHtml(m.name)}">${escapeHtml(m.name)} (${roleLabels[m.role]})</option>`).join('');
+  }
+}
+
+// CRUD Membres
+window.editMembre = function(id) {
+  const membres = getMembres();
+  const m = membres.find(mb => mb.id === id);
+  if (!m) return;
+  document.getElementById('membreEditId').value = m.id;
+  document.getElementById('membreId').value = m.id;
+  document.getElementById('membreName').value = m.name;
+  document.getElementById('membrePass').value = m.pass;
+  document.getElementById('membreRole').value = m.role;
+  document.getElementById('membreModal').classList.add('open');
+};
+
+window.deleteMembre = function(id) {
+  if (!confirm('Supprimer ce membre ?')) return;
+  let membres = getMembres();
+  membres = membres.filter(m => m.id !== id);
+  saveMembres(membres);
+  renderMembres();
+  populateAssigneeSelect();
+};
+
+function saveMembreFromModal() {
+  const editId = document.getElementById('membreEditId').value;
+  const id = document.getElementById('membreId').value.trim().toLowerCase();
+  const name = document.getElementById('membreName').value.trim();
+  const pass = document.getElementById('membrePass').value;
+  const role = document.getElementById('membreRole').value;
+  if (!id || !name || !pass) return;
+  
+  let membres = getMembres();
+  if (editId) {
+    membres = membres.map(m => m.id === editId ? { ...m, id, name, pass, role } : m);
+  } else {
+    membres.push({ id, name, pass, role });
+  }
+  saveMembres(membres);
+  document.getElementById('membreModal').classList.remove('open');
+  renderMembres();
+  populateAssigneeSelect();
+}
+
+// Navigation
+function showPanel(panelId) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`panel-${panelId}`).classList.add('active');
+  const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.dataset.panel === panelId);
+  if (activeNav) activeNav.classList.add('active');
+  const titles = { home: 'Tableau de bord', tasks: 'Tâches', membres: 'Membres' };
+  document.getElementById('topbar-title').textContent = titles[panelId] || 'ASM';
+}
+
+// Login
+function doLogin() {
+  const role = document.getElementById('login-role').value;
+  const userId = document.getElementById('login-user').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  const errorDiv = document.getElementById('login-error');
+  
+  if (!role || !userId || !pass) {
+    errorDiv.textContent = 'Veuillez remplir tous les champs';
+    errorDiv.style.display = 'block';
+    return;
+  }
+  
+  const membres = getMembres();
+  const user = membres.find(m => m.id === userId && m.pass === pass && m.role === role);
+  
+  if (!user) {
+    errorDiv.textContent = 'Identifiant, mot de passe ou rôle incorrect';
+    errorDiv.style.display = 'block';
+    return;
+  }
+  
+  currentUser = user;
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-role-label').textContent = roleLabels[user.role] || user.role;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('welcome-msg').textContent = `Bienvenue, ${user.name}`;
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  
+  // Afficher/cacher les boutons selon rôle
+  const isAdmin = user.role === 'ddp';
+  document.getElementById('btn-add-membre').style.display = isAdmin ? 'inline-block' : 'none';
+  
+  renderMembres();
+  loadTasks();
+  populateAssigneeSelect();
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-role').value = '';
+}
+
+// Helper
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+
+// Gestion modale tâche
+let editingTaskId = null;
+function openTaskModal() {
+  editingTaskId = null;
+  document.getElementById('taskModalTitle').textContent = 'Nouvelle tâche';
+  document.getElementById('taskName').value = '';
+  document.getElementById('taskPrio').value = 'moyenne';
+  document.getElementById('taskModal').classList.add('open');
+  populateAssigneeSelect();
+}
+
+function editTaskFromList(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  editingTaskId = id;
+  document.getElementById('taskModalTitle').textContent = 'Modifier la tâche';
+  document.getElementById('taskName').value = task.name;
+  document.getElementById('taskPrio').value = task.prio;
+  const assigneeSelect = document.getElementById('taskAssignee');
+  populateAssigneeSelect();
+  assigneeSelect.value = task.assignee;
+  document.getElementById('taskModal').classList.add('open');
+}
+
+function saveTaskFromModal() {
+  const name = document.getElementById('taskName').value.trim();
+  const assignee = document.getElementById('taskAssignee').value;
+  const prio = document.getElementById('taskPrio').value;
+  if (!name) return;
+  if (editingTaskId) {
+    updateTask(editingTaskId, name, assignee, prio);
+  } else {
+    addTask(name, assignee, prio);
+  }
+  document.getElementById('taskModal').classList.remove('open');
+  editingTaskId = null;
+}
+
+// Initialisation des événements
+document.addEventListener('DOMContentLoaded', () => {
+  // Navigation
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => showPanel(item.dataset.panel));
+  });
+  
+  // Login
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+  
+  // Enter key sur password
+  document.getElementById('login-pass').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') doLogin();
+  });
+  
+  // Modale tâche
+  document.getElementById('btn-add-task').addEventListener('click', openTaskModal);
+  document.getElementById('saveTaskBtn').addEventListener('click', saveTaskFromModal);
+  
+  // Modale membre
+  document.getElementById('btn-add-membre').addEventListener('click', () => {
+    document.getElementById('membreEditId').value = '';
+    document.getElementById('membreId').value = '';
+    document.getElementById('membreName').value = '';
+    document.getElementById('membrePass').value = '';
+    document.getElementById('membreRole').value = 'ddp';
+    document.getElementById('membreModal').classList.add('open');
+  });
+  document.getElementById('saveMembreBtn').addEventListener('click', saveMembreFromModal);
+  
+  // Fermeture modales
+  document.querySelectorAll('.modal-close-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modalId = btn.dataset.close;
+      document.getElementById(modalId).classList.remove('open');
+    });
+  });
+  
+  // Click outside pour fermer
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  });
+  
+  // Pour éditer une tâche depuis la liste (via bouton à ajouter si besoin)
+  // On expose la fonction globalement
+  window.editTaskFromList = editTaskFromList;
+  window.deleteTask = deleteTask;
+  
+  // Ajouter un bouton éditer/supprimer sur les tâches si admin
+  // Amélioration du render
+  const originalRender = renderAllTasks;
+  window.renderAllTasks = function() {
+    const isAdmin = currentUser && currentUser.role === 'ddp';
+    const container = document.getElementById('tasks-list');
+    const allContainer = document.getElementById('all-tasks-list');
+    const taskList = [...tasks].reverse();
+    const renderFn = (target, list) => {
+      if (!target) return;
+      if (list.length === 0) {
+        target.innerHTML = '<div style="color:var(--cream3);">Aucune tâche</div>';
+        return;
+      }
+      target.innerHTML = list.map(t => `
+        <div class="task-item ${t.done ? 'completed' : ''}">
+          <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask('${t.id}')"></div>
+          <div class="task-name">${escapeHtml(t.name)}</div>
+          <div class="task-assignee">${escapeHtml(t.assignee)}</div>
+          <div class="task-prio prio-${t.prio}">${t.prio}</div>
+          ${isAdmin ? `<div style="display:flex;gap:5px;">
+            <button onclick="editTaskFromList('${t.id}')" style="background:var(--gold);color:var(--ink);border:none;padding:4px 8px;cursor:pointer;">✎</button>
+            <button onclick="deleteTask('${t.id}')" style="background:var(--red);color:white;border:none;padding:4px 8px;cursor:pointer;">✕</button>
+          </div>` : ''}
+        </div>
+      `).join('');
+    };
+    renderFn(container, taskList.slice(0, 5));
+    if (allContainer) renderFn(allContainer, taskList);
+    updateTaskCount();
+  };
+  renderAllTasks = window.renderAllTasks;
+  // Remplacer la fonction originale
+  window.renderAllTasks();
+});
 </script>
-
-<script type="module">
-  import { initializeApp } from "firebase/app";
-  import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, setDoc } from "firebase/firestore";
-
-  const firebaseConfig = { apiKey: "AIzaSyC6C4u4CW25tQ1IJZTSgIZi6OFeu-KzCWg", authDomain: "asmm-cefcf.firebaseapp.com", projectId: "asmm-cefcf", storageBucket: "asmm-cefcf.firebasestorage.app", messagingSenderId: "784738924514", appId: "1:784738924514:web:17e52bf8d4d7ed7d1a2bbb" };
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Données locales actes
-  let actesData = [
-    { id:"acte1", num:"Acte I", name:"La Terre et le Ciel", pct:0, status:"todo" }, { id:"acte2", num:"Acte II", name:"Les Premiers Grondements", pct:0, status:"todo" },
-    { id:"acte3", num:"Acte III", name:"Le Raid", pct:0, status:"todo" }, { id:"acte4", num:"Acte IV", name:"Le Soulèvement", pct:0, status:"todo" },
-    { id:"acte5", num:"Acte V", name:"Frères d'Armes", pct:0, status:"todo" }, { id:"acte6", num:"Acte VI", name:"Les Victoires", pct:0, status:"todo" },
-    { id:"acte7", num:"Acte VII", name:"La Déroute", pct:0, status:"todo" }, { id:"acte8", num:"Acte VIII", name:"L'Hiver des Loups", pct:0, status:"todo" },
-    { id:"acte9", num:"Acte IX", name:"Les Colonnes Infernales", pct:0, status:"todo" }, { id:"acte10", num:"Acte X", name:"La Fin d'un Monde", pct:0, status:"todo" }
-  ];
-  let currentUser = null;
-  let tasksArray = [];
-  let currentFilter = "all";
-
-  const membresDefault = [{id:"guirrie",name:"Guirrie",pass:"Ven1793!G",role:"ddp"},{id:"lomol",name:"Lomol",pass:"Ven1793!L",role:"ddp"},{id:"xentrax",name:"Xentrax",pass:"Ven1793!X",role:"ddp"},{id:"1baba",name:"1baba",pass:"Ven1793!B",role:"ddp"},{id:"theo",name:"Théo",pass:"Ven1793!T",role:"ddp"},{id:"anae",name:"Anaë",pass:"Ven1793!A",role:"resp-dev"},{id:"elioth",name:"Elioth",pass:"Ven1793!E",role:"ddpa"},{id:"mael",name:"Mael",pass:"Ven1793!M",role:"voix"}];
-  function getMembres() { try { return JSON.parse(localStorage.getItem("asm_membres")) || membresDefault; } catch(e) { return membresDefault; } }
-  function saveMembres(list) { localStorage.setItem("asm_membres", JSON.stringify(list)); }
-
-  const roleLabels = { ddp:"Directeur de Projet", ddpa:"Directeur Adjoint", "resp-dev":"Responsable Développement", developpeur:"Développeur", builder:"Builder", scripteur:"Scripteur", testeur:"Testeur", voix:"Voix" };
-  function can(action) { if(!currentUser) return false; const level = { ddp:5, ddpa:4, "resp-dev":3, developpeur:3, builder:2, scripteur:2, testeur:2, voix:2 }[currentUser.role] || 1; if(action==="
+</body>
+</html>
