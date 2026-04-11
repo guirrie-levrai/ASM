@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ASM — Espace Équipe</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold: #C9A84C;
@@ -171,7 +171,6 @@
       justify-content: space-between;
       padding: 0 36px;
       background: rgba(14,11,6,0.85);
-      backdrop-filter: blur(8px);
     }
     .content { padding: 32px 36px; }
     .panel { display: none; }
@@ -211,7 +210,7 @@
       border: 1px solid var(--border);
       padding: 14px 18px;
       display: grid;
-      grid-template-columns: auto 1fr auto auto;
+      grid-template-columns: auto 1fr auto auto auto;
       align-items: center;
       gap: 12px;
     }
@@ -231,6 +230,7 @@
     }
     .prio-haute { background: rgba(122,26,26,0.4); color: #E89090; }
     .prio-moyenne { background: rgba(201,168,76,0.2); color: var(--gold); }
+    .prio-basse { background: rgba(26,74,42,0.4); color: #7EC89A; }
     .modal-overlay {
       display: none;
       position: fixed;
@@ -260,7 +260,7 @@
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- PAGE DE CONNEXION -->
 <div id="login-page">
   <div class="login-box">
     <div class="login-header">
@@ -291,48 +291,118 @@
         <label>Mot de passe</label>
         <input type="password" id="login-pass" placeholder="mot de passe">
       </div>
-      <button class="btn-login" id="loginBtn">Accéder</button>
+      <button class="btn-login" id="loginBtn">ACCÉDER</button>
       <p class="login-sub" style="margin-top:20px;text-align:center">Contactez la direction</p>
     </div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- TABLEAU DE BORD -->
 <div id="dashboard">
   <div class="sidebar">
     <div class="sidebar-brand"><div class="sidebar-logo">Athanase Stories Makers</div></div>
-    <div class="sidebar-user"><div class="user-avatar" id="user-avatar">?</div><div><div class="user-name" id="user-name"></div><div class="user-role" id="user-role-label"></div></div></div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div>
+        <div class="user-name" id="user-name"></div>
+        <div class="user-role" id="user-role-label"></div>
+      </div>
+    </div>
     <nav class="sidebar-nav">
       <div class="nav-item active" data-panel="home">◈ Tableau de bord</div>
       <div class="nav-item" data-panel="tasks">◻ Tâches</div>
       <div class="nav-item" data-panel="membres">◉ Membres</div>
     </nav>
-    <div class="sidebar-footer"><button class="btn-logout" id="logoutBtn">Déconnexion</button></div>
+    <div class="sidebar-footer">
+      <button class="btn-logout" id="logoutBtn">Déconnexion</button>
+    </div>
   </div>
   <div class="main">
-    <div class="topbar"><div class="topbar-title" id="topbar-title">Tableau de bord</div><div id="topbar-date"></div></div>
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Tableau de bord</div>
+      <div id="topbar-date"></div>
+    </div>
     <div class="content">
+      <!-- PANEL ACCUEIL -->
       <div class="panel active" id="panel-home">
-        <div class="welcome-banner"><div class="welcome-text" id="welcome-msg"></div></div>
-        <div class="card"><div class="card-title">Tâches récentes <button class="btn-add" id="btn-add-task">+</button></div><div id="tasks-list">Chargement...</div></div>
-        <div class="card"><div class="card-title">Membres</div><div id="membres-list"></div></div>
+        <div class="welcome-banner">
+          <div class="welcome-text" id="welcome-msg"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Tâches récentes <button class="btn-add" id="btn-add-task">+ Ajouter</button></div>
+          <div id="tasks-list" class="tasks-list">Chargement...</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Membres de l'équipe</div>
+          <div id="membres-list"></div>
+        </div>
       </div>
+      
+      <!-- PANEL TÂCHES -->
       <div class="panel" id="panel-tasks">
-        <div class="card"><div class="card-title">Toutes les tâches</div><div id="all-tasks-list"></div></div>
+        <div class="card">
+          <div class="card-title">Toutes les tâches <button class="btn-add" id="btn-add-task-full">+ Ajouter</button></div>
+          <div id="all-tasks-list" class="tasks-list"></div>
+        </div>
       </div>
+      
+      <!-- PANEL MEMBRES -->
       <div class="panel" id="panel-membres">
-        <div class="card"><div class="card-title">Gestion des membres <button class="btn-add" id="btn-add-membre">+</button></div><div id="membres-full-list"></div></div>
+        <div class="card">
+          <div class="card-title">Gestion des membres <button class="btn-add" id="btn-add-membre">+ Ajouter</button></div>
+          <div id="membres-full-list"></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODALS -->
-<div class="modal-overlay" id="taskModal"><div class="modal-box"><button class="modal-close-btn" data-close="taskModal">✕</button><h3 id="taskModalTitle">Nouvelle tâche</h3><input type="hidden" id="taskEditId"><div class="field"><label>Titre</label><input type="text" id="taskName" style="width:100%"></div><div class="field"><label>Assigné à</label><select id="taskAssignee" style="width:100%"></select></div><div class="field"><label>Priorité</label><select id="taskPrio" style="width:100%"><option value="haute">Haute</option><option value="moyenne">Moyenne</option><option value="basse">Basse</option></select></div><button class="btn-login" id="saveTaskBtn">Enregistrer</button></div></div>
-<div class="modal-overlay" id="membreModal"><div class="modal-box"><button class="modal-close-btn" data-close="membreModal">✕</button><h3>Membre</h3><input type="hidden" id="membreEditId"><div class="field"><label>Identifiant</label><input type="text" id="membreId" style="width:100%"></div><div class="field"><label>Nom</label><input type="text" id="membreName" style="width:100%"></div><div class="field"><label>Mot de passe</label><input type="text" id="membrePass" style="width:100%"></div><div class="field"><label>Rôle</label><select id="membreRole" style="width:100%"><option value="ddp">DDP</option><option value="ddpa">DDPA</option><option value="resp-dev">RD</option><option value="developpeur">Développeur</option><option value="builder">Builder</option></select></div><button class="btn-login" id="saveMembreBtn">Enregistrer</button></div></div>
+<!-- MODALE TÂCHE -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal-box">
+    <button class="modal-close-btn" data-close="taskModal">✕</button>
+    <h3 id="taskModalTitle">Nouvelle tâche</h3>
+    <input type="hidden" id="taskEditId">
+    <div class="field"><label>Titre</label><input type="text" id="taskName" style="width:100%"></div>
+    <div class="field"><label>Assigné à</label><select id="taskAssignee" style="width:100%"></select></div>
+    <div class="field"><label>Priorité</label>
+      <select id="taskPrio" style="width:100%">
+        <option value="haute">Haute</option>
+        <option value="moyenne" selected>Moyenne</option>
+        <option value="basse">Basse</option>
+      </select>
+    </div>
+    <button class="btn-login" id="saveTaskBtn">Enregistrer</button>
+  </div>
+</div>
+
+<!-- MODALE MEMBRE -->
+<div class="modal-overlay" id="membreModal">
+  <div class="modal-box">
+    <button class="modal-close-btn" data-close="membreModal">✕</button>
+    <h3>Membre</h3>
+    <input type="hidden" id="membreEditId">
+    <div class="field"><label>Identifiant</label><input type="text" id="membreId" style="width:100%"></div>
+    <div class="field"><label>Nom</label><input type="text" id="membreName" style="width:100%"></div>
+    <div class="field"><label>Mot de passe</label><input type="text" id="membrePass" style="width:100%"></div>
+    <div class="field"><label>Rôle</label>
+      <select id="membreRole" style="width:100%">
+        <option value="ddp">Directeur de Projet (DDP)</option>
+        <option value="ddpa">Directeur Adjoint (DDPA)</option>
+        <option value="resp-dev">Responsable Développement (RD)</option>
+        <option value="developpeur">Développeur</option>
+        <option value="builder">Builder</option>
+        <option value="scripteur">Scripteur</option>
+        <option value="testeur">Testeur</option>
+        <option value="voix">Voix</option>
+      </select>
+    </div>
+    <button class="btn-login" id="saveMembreBtn">Enregistrer</button>
+  </div>
+</div>
 
 <script>
-// ===== DONNÉES MEMBRES (LOCAL STORAGE) =====
+// ========== DONNÉES MEMBRES ==========
 const DEFAULT_MEMBRES = [
   { id: 'guirrie', name: 'Guirrie', pass: 'Ven1793!G', role: 'ddp' },
   { id: 'lomol', name: 'Lomol', pass: 'Ven1793!L', role: 'ddp' },
@@ -343,17 +413,6 @@ const DEFAULT_MEMBRES = [
   { id: 'elioth', name: 'Elioth', pass: 'Ven1793!E', role: 'ddpa' },
   { id: 'mael', name: 'Mael', pass: 'Ven1793!M', role: 'voix' }
 ];
-
-function getMembres() {
-  try {
-    const saved = localStorage.getItem('asm_membres');
-    return saved ? JSON.parse(saved) : DEFAULT_MEMBRES;
-  } catch(e) { return DEFAULT_MEMBRES; }
-}
-
-function saveMembres(list) {
-  localStorage.setItem('asm_membres', JSON.stringify(list));
-}
 
 const roleLabels = {
   ddp: 'Directeur de Projet',
@@ -366,10 +425,20 @@ const roleLabels = {
   voix: 'Voix'
 };
 
-let currentUser = null;
+function getMembres() {
+  try {
+    const saved = localStorage.getItem('asm_membres');
+    return saved ? JSON.parse(saved) : [...DEFAULT_MEMBRES];
+  } catch(e) { return [...DEFAULT_MEMBRES]; }
+}
+
+function saveMembres(list) {
+  localStorage.setItem('asm_membres', JSON.stringify(list));
+}
+
+// ========== DONNÉES TÂCHES ==========
 let tasks = [];
 
-// Charger les tâches depuis localStorage
 function loadTasks() {
   const saved = localStorage.getItem('asm_tasks');
   tasks = saved ? JSON.parse(saved) : [];
@@ -383,34 +452,33 @@ function saveTasks() {
 function renderAllTasks() {
   const container = document.getElementById('tasks-list');
   const allContainer = document.getElementById('all-tasks-list');
-  if (!container) return;
+  const isAdmin = currentUser && currentUser.role === 'ddp';
   
-  const recentTasks = [...tasks].reverse().slice(0, 5);
-  const renderList = (target, taskList) => {
+  const taskList = [...tasks].reverse();
+  const recentTasks = taskList.slice(0, 5);
+  
+  const renderFn = (target, list) => {
     if (!target) return;
-    if (taskList.length === 0) {
+    if (list.length === 0) {
       target.innerHTML = '<div style="color:var(--cream3);">Aucune tâche</div>';
       return;
     }
-    target.innerHTML = taskList.map(t => `
-      <div class="task-item ${t.done ? 'completed' : ''}">
+    target.innerHTML = list.map(t => `
+      <div class="task-item">
         <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask('${t.id}')"></div>
-        <div class="task-name">${escapeHtml(t.name)}</div>
+        <div class="task-name ${t.done ? 'completed' : ''}" style="${t.done ? 'text-decoration:line-through;color:var(--cream3);' : ''}">${escapeHtml(t.name)}</div>
         <div class="task-assignee">${escapeHtml(t.assignee)}</div>
         <div class="task-prio prio-${t.prio}">${t.prio}</div>
+        ${isAdmin ? `<div style="display:flex;gap:5px;">
+          <button onclick="editTask('${t.id}')" style="background:var(--gold);color:var(--ink);border:none;padding:4px 8px;cursor:pointer;border-radius:3px;">✎</button>
+          <button onclick="deleteTask('${t.id}')" style="background:var(--red);color:white;border:none;padding:4px 8px;cursor:pointer;border-radius:3px;">✕</button>
+        </div>` : ''}
       </div>
     `).join('');
   };
   
-  renderList(container, recentTasks);
-  if (allContainer) renderList(allContainer, [...tasks].reverse());
-  updateTaskCount();
-}
-
-function updateTaskCount() {
-  const doneCount = tasks.filter(t => t.done).length;
-  const doneElem = document.getElementById('tasks-done-count');
-  if (doneElem) doneElem.textContent = doneCount;
+  renderFn(container, recentTasks);
+  if (allContainer) renderFn(allContainer, taskList);
 }
 
 window.toggleTask = function(id) {
@@ -420,6 +488,25 @@ window.toggleTask = function(id) {
     saveTasks();
     renderAllTasks();
   }
+};
+
+window.editTask = function(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  editingTaskId = id;
+  document.getElementById('taskModalTitle').textContent = 'Modifier la tâche';
+  document.getElementById('taskName').value = task.name;
+  document.getElementById('taskPrio').value = task.prio;
+  populateAssigneeSelect();
+  document.getElementById('taskAssignee').value = task.assignee;
+  document.getElementById('taskModal').classList.add('open');
+};
+
+window.deleteTask = function(id) {
+  if (!confirm('Supprimer cette tâche ?')) return;
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks();
+  renderAllTasks();
 };
 
 function addTask(name, assignee, prio) {
@@ -447,35 +534,34 @@ function updateTask(id, name, assignee, prio) {
   }
 }
 
-function deleteTask(id) {
-  tasks = tasks.filter(t => t.id !== id);
-  saveTasks();
-  renderAllTasks();
-}
-
-// Rendu des membres
+// ========== RENDU MEMBRES ==========
 function renderMembres() {
   const membres = getMembres();
   const container = document.getElementById('membres-list');
   const fullContainer = document.getElementById('membres-full-list');
+  const isAdmin = currentUser && currentUser.role === 'ddp';
   
-  const renderList = (target, list, isFull = false) => {
+  const renderFn = (target, list, showActions = false) => {
     if (!target) return;
+    if (list.length === 0) {
+      target.innerHTML = '<div style="color:var(--cream3);">Aucun membre</div>';
+      return;
+    }
     target.innerHTML = list.map(m => `
       <div class="task-item" style="grid-template-columns: 1fr auto;">
-        <div><strong>${escapeHtml(m.name)}</strong> (${roleLabels[m.role] || m.role})</div>
-        ${isFull && currentUser && currentUser.role === 'ddp' ? `
+        <div><strong>${escapeHtml(m.name)}</strong> (${roleLabels[m.role] || m.role})<br><span style="font-size:11px;color:var(--cream3);">${escapeHtml(m.id)}</span></div>
+        ${showActions && isAdmin ? `
           <div>
-            <button onclick="editMembre('${m.id}')" style="background:var(--gold);color:var(--ink);border:none;padding:4px 8px;margin-right:5px;cursor:pointer;">✎</button>
-            <button onclick="deleteMembre('${m.id}')" style="background:var(--red);color:white;border:none;padding:4px 8px;cursor:pointer;">✕</button>
+            <button onclick="editMembre('${m.id}')" style="background:var(--gold);color:var(--ink);border:none;padding:4px 8px;margin-right:5px;cursor:pointer;border-radius:3px;">✎</button>
+            <button onclick="deleteMembre('${m.id}')" style="background:var(--red);color:white;border:none;padding:4px 8px;cursor:pointer;border-radius:3px;">✕</button>
           </div>
         ` : ''}
       </div>
     `).join('');
   };
   
-  renderList(container, membres, false);
-  if (fullContainer) renderList(fullContainer, membres, true);
+  renderFn(container, membres, false);
+  if (fullContainer) renderFn(fullContainer, membres, true);
 }
 
 function populateAssigneeSelect() {
@@ -486,7 +572,7 @@ function populateAssigneeSelect() {
   }
 }
 
-// CRUD Membres
+// ========== CRUD MEMBRES ==========
 window.editMembre = function(id) {
   const membres = getMembres();
   const m = membres.find(mb => mb.id === id);
@@ -514,12 +600,19 @@ function saveMembreFromModal() {
   const name = document.getElementById('membreName').value.trim();
   const pass = document.getElementById('membrePass').value;
   const role = document.getElementById('membreRole').value;
-  if (!id || !name || !pass) return;
+  if (!id || !name || !pass) {
+    alert('Veuillez remplir tous les champs');
+    return;
+  }
   
   let membres = getMembres();
   if (editId) {
     membres = membres.map(m => m.id === editId ? { ...m, id, name, pass, role } : m);
   } else {
+    if (membres.find(m => m.id === id)) {
+      alert('Cet identifiant existe déjà');
+      return;
+    }
     membres.push({ id, name, pass, role });
   }
   saveMembres(membres);
@@ -528,23 +621,17 @@ function saveMembreFromModal() {
   populateAssigneeSelect();
 }
 
-// Navigation
-function showPanel(panelId) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(`panel-${panelId}`).classList.add('active');
-  const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.dataset.panel === panelId);
-  if (activeNav) activeNav.classList.add('active');
-  const titles = { home: 'Tableau de bord', tasks: 'Tâches', membres: 'Membres' };
-  document.getElementById('topbar-title').textContent = titles[panelId] || 'ASM';
-}
+// ========== GESTION CONNEXION ==========
+let currentUser = null;
+let editingTaskId = null;
 
-// Login
 function doLogin() {
   const role = document.getElementById('login-role').value;
   const userId = document.getElementById('login-user').value.trim().toLowerCase();
   const pass = document.getElementById('login-pass').value;
   const errorDiv = document.getElementById('login-error');
+  
+  console.log('Tentative de connexion:', { role, userId, pass });
   
   if (!role || !userId || !pass) {
     errorDiv.textContent = 'Veuillez remplir tous les champs';
@@ -553,6 +640,8 @@ function doLogin() {
   }
   
   const membres = getMembres();
+  console.log('Membres disponibles:', membres);
+  
   const user = membres.find(m => m.id === userId && m.pass === pass && m.role === role);
   
   if (!user) {
@@ -560,6 +649,8 @@ function doLogin() {
     errorDiv.style.display = 'block';
     return;
   }
+  
+  console.log('Connexion réussie pour:', user);
   
   currentUser = user;
   document.getElementById('login-page').style.display = 'none';
@@ -570,7 +661,7 @@ function doLogin() {
   document.getElementById('welcome-msg').textContent = `Bienvenue, ${user.name}`;
   document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   
-  // Afficher/cacher les boutons selon rôle
+  // Afficher/cacher bouton ajout membre selon rôle
   const isAdmin = user.role === 'ddp';
   document.getElementById('btn-add-membre').style.display = isAdmin ? 'inline-block' : 'none';
   
@@ -588,7 +679,6 @@ function doLogout() {
   document.getElementById('login-role').value = '';
 }
 
-// Helper
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, function(m) {
@@ -599,27 +689,13 @@ function escapeHtml(str) {
   });
 }
 
-// Gestion modale tâche
-let editingTaskId = null;
+// ========== GESTION MODALES TÂCHE ==========
 function openTaskModal() {
   editingTaskId = null;
   document.getElementById('taskModalTitle').textContent = 'Nouvelle tâche';
   document.getElementById('taskName').value = '';
   document.getElementById('taskPrio').value = 'moyenne';
-  document.getElementById('taskModal').classList.add('open');
   populateAssigneeSelect();
-}
-
-function editTaskFromList(id) {
-  const task = tasks.find(t => t.id === id);
-  if (!task) return;
-  editingTaskId = id;
-  document.getElementById('taskModalTitle').textContent = 'Modifier la tâche';
-  document.getElementById('taskName').value = task.name;
-  document.getElementById('taskPrio').value = task.prio;
-  const assigneeSelect = document.getElementById('taskAssignee');
-  populateAssigneeSelect();
-  assigneeSelect.value = task.assignee;
   document.getElementById('taskModal').classList.add('open');
 }
 
@@ -627,7 +703,10 @@ function saveTaskFromModal() {
   const name = document.getElementById('taskName').value.trim();
   const assignee = document.getElementById('taskAssignee').value;
   const prio = document.getElementById('taskPrio').value;
-  if (!name) return;
+  if (!name) {
+    alert('Veuillez entrer un titre');
+    return;
+  }
   if (editingTaskId) {
     updateTask(editingTaskId, name, assignee, prio);
   } else {
@@ -637,28 +716,47 @@ function saveTaskFromModal() {
   editingTaskId = null;
 }
 
-// Initialisation des événements
-document.addEventListener('DOMContentLoaded', () => {
+// ========== INITIALISATION ==========
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Page chargée, initialisation...');
+  
   // Navigation
   document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => showPanel(item.dataset.panel));
+    item.addEventListener('click', function() {
+      const panelId = this.dataset.panel;
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(`panel-${panelId}`).classList.add('active');
+      this.classList.add('active');
+      const titles = { home: 'Tableau de bord', tasks: 'Tâches', membres: 'Membres' };
+      document.getElementById('topbar-title').textContent = titles[panelId] || 'ASM';
+    });
   });
   
-  // Login
-  document.getElementById('loginBtn').addEventListener('click', doLogin);
-  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+  // Boutons connexion
+  const loginBtn = document.getElementById('loginBtn');
+  if (loginBtn) {
+    loginBtn.addEventListener('click', doLogin);
+    console.log('Bouton login attaché');
+  } else {
+    console.error('Bouton login non trouvé !');
+  }
   
   // Enter key sur password
-  document.getElementById('login-pass').addEventListener('keypress', (e) => {
+  document.getElementById('login-pass').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') doLogin();
   });
   
-  // Modale tâche
+  // Déconnexion
+  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+  
+  // Ajout tâche
   document.getElementById('btn-add-task').addEventListener('click', openTaskModal);
+  document.getElementById('btn-add-task-full').addEventListener('click', openTaskModal);
   document.getElementById('saveTaskBtn').addEventListener('click', saveTaskFromModal);
   
-  // Modale membre
-  document.getElementById('btn-add-membre').addEventListener('click', () => {
+  // Ajout membre
+  document.getElementById('btn-add-membre').addEventListener('click', function() {
     document.getElementById('membreEditId').value = '';
     document.getElementById('membreId').value = '';
     document.getElementById('membreName').value = '';
@@ -670,58 +768,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Fermeture modales
   document.querySelectorAll('.modal-close-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const modalId = btn.dataset.close;
+    btn.addEventListener('click', function() {
+      const modalId = this.dataset.close;
       document.getElementById(modalId).classList.remove('open');
     });
   });
   
-  // Click outside pour fermer
+  // Click outside
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.classList.remove('open');
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
     });
   });
-  
-  // Pour éditer une tâche depuis la liste (via bouton à ajouter si besoin)
-  // On expose la fonction globalement
-  window.editTaskFromList = editTaskFromList;
-  window.deleteTask = deleteTask;
-  
-  // Ajouter un bouton éditer/supprimer sur les tâches si admin
-  // Amélioration du render
-  const originalRender = renderAllTasks;
-  window.renderAllTasks = function() {
-    const isAdmin = currentUser && currentUser.role === 'ddp';
-    const container = document.getElementById('tasks-list');
-    const allContainer = document.getElementById('all-tasks-list');
-    const taskList = [...tasks].reverse();
-    const renderFn = (target, list) => {
-      if (!target) return;
-      if (list.length === 0) {
-        target.innerHTML = '<div style="color:var(--cream3);">Aucune tâche</div>';
-        return;
-      }
-      target.innerHTML = list.map(t => `
-        <div class="task-item ${t.done ? 'completed' : ''}">
-          <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask('${t.id}')"></div>
-          <div class="task-name">${escapeHtml(t.name)}</div>
-          <div class="task-assignee">${escapeHtml(t.assignee)}</div>
-          <div class="task-prio prio-${t.prio}">${t.prio}</div>
-          ${isAdmin ? `<div style="display:flex;gap:5px;">
-            <button onclick="editTaskFromList('${t.id}')" style="background:var(--gold);color:var(--ink);border:none;padding:4px 8px;cursor:pointer;">✎</button>
-            <button onclick="deleteTask('${t.id}')" style="background:var(--red);color:white;border:none;padding:4px 8px;cursor:pointer;">✕</button>
-          </div>` : ''}
-        </div>
-      `).join('');
-    };
-    renderFn(container, taskList.slice(0, 5));
-    if (allContainer) renderFn(allContainer, taskList);
-    updateTaskCount();
-  };
-  renderAllTasks = window.renderAllTasks;
-  // Remplacer la fonction originale
-  window.renderAllTasks();
 });
 </script>
 </body>
